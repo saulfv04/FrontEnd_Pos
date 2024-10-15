@@ -1,5 +1,6 @@
 package pos.logic;
 
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
@@ -69,17 +70,37 @@ public class Service implements IService{
     }
 
     @Override
-    public List<Producto> search(Producto e) throws Exception{
+    public List<Producto> search(Producto e){
+        try {
+            os.writeInt(Protocol.PRODUCTO_SEARCH);
+            os.writeObject(e); // Enviar el objeto para buscar
+            os.flush();
 
-        os.writeInt(Protocol.PRODUCTO_SEARCH);
-        os.writeObject(e); // Enviar el objeto para buscar
-        os.flush();
+            int response = is.readInt();
+            if (response == Protocol.ERROR_NO_ERROR) {
+                return (List<Producto>) is.readObject(); // Leer y devolver la lista de productos
+            } else {
+                throw new Exception("ERROR AL BUSCAR PRODUCTO");
+            }
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
 
-        int response = is.readInt();
-        if (response == Protocol.ERROR_NO_ERROR) {
-            return (List<Producto>) is.readObject(); // Leer y devolver la lista de productos
-        } else {
-            throw new Exception("ERROR AL BUSCAR PRODUCTO");
+    @Override
+    public void updateExistencias(Producto e){
+        try {
+            os.writeInt(Protocol.PRODUCTO_UPDATE_EXISTENCIAS); // Protocolo para actualización de existencias
+            os.writeObject(e); // Enviar el objeto producto con las nuevas existencias
+            os.flush();
+
+            int response = is.readInt(); // Leer respuesta del servidor
+            if (response != Protocol.ERROR_NO_ERROR) {
+                throw new Exception("ERROR AL ACTUALIZAR EXISTENCIAS DEL PRODUCTO");
+            }
+
+        } catch (Exception ex) {
+            throw new RuntimeException("Error al actualizar las existencias del producto", ex);
         }
     }
 
@@ -89,6 +110,26 @@ public class Service implements IService{
     public List<Categoria> search(Categoria e) {
         try {
             os.writeInt(Protocol.CATEGORIA_SEARCH);
+            os.writeObject(e);
+            os.flush();
+
+            int response = is.readInt();
+            if (response == Protocol.ERROR_NO_ERROR) {
+                // Leer la lista de categorías
+                return (List<Categoria>) is.readObject();
+            } else {
+                throw new Exception("ERROR AL BUSCAR CATEGORIA");
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return new ArrayList<>(); // Retorna una lista vacía en caso de error
+        }
+    }
+
+    @Override
+    public List<Categoria> getCategorias(){
+        try {
+            os.writeInt(Protocol.CATEGORIA_GETCATEGORIAS);
             os.writeObject(e);
             os.flush();
 
@@ -156,7 +197,8 @@ public class Service implements IService{
     }
 
     @Override
-    public List<Cliente> search(Cliente e) throws Exception {
+    public List<Cliente> search(Cliente e){
+        try{
         os.writeInt(Protocol.CLIENTE_SEARCH);
         os.writeObject(e); // Enviar el objeto para buscar
         os.flush();
@@ -167,11 +209,10 @@ public class Service implements IService{
         } else {
             throw new Exception("ERROR AL BUSCAR CLIENTE");
         }
+    } catch (Exception ex) {
+        ex.printStackTrace();
+        return new ArrayList<>(); // Retorna una lista vacía en caso de error
     }
-
-    @Override
-    public void create(Linea linea) throws Exception {
-
     }
 
     //===================== CAJERO =====================
@@ -226,7 +267,8 @@ public class Service implements IService{
 
 
     @Override
-    public List<Cajero> search(Cajero e) throws Exception {
+    public List<Cajero> search(Cajero e) {
+        try {
         os.writeInt(Protocol.CAJERO_SEARCH);
         os.writeObject(e); // Enviar el objeto para buscar
         os.flush();
@@ -236,6 +278,10 @@ public class Service implements IService{
             return (List<Cajero>) is.readObject(); // Leer y devolver la lista de cajeros
         } else {
             throw new Exception("ERROR AL BUSCAR CAJERO");
+        }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return new ArrayList<>(); // Retorna una lista vacía en caso de error
         }
     }
 
@@ -290,7 +336,8 @@ public class Service implements IService{
     }
 
     @Override
-    public List<Factura> search(Factura e) throws Exception {
+    public List<Factura> search(Factura e) {
+        try{
         os.writeInt(Protocol.FACTURA_SEARCH);
         os.writeObject(e); // Enviar el objeto para buscar
         os.flush();
@@ -301,13 +348,34 @@ public class Service implements IService{
         } else {
             throw new Exception("ERROR AL BUSCAR FACTURA");
         }
+    } catch (Exception ex) {
+        ex.printStackTrace();
+        return new ArrayList<>(); // Retorna una lista vacía en caso de error
     }
+    }
+    public List<Linea> searchByFacturId(String facturaId) {
+        try {
+            os.writeInt(Protocol.FACTURA_SEARCHFACTURAID); // Protocolo para buscar por facturaId
+            os.writeObject(facturaId); // Enviar el id de la factura a buscar
+            os.flush();
 
+            int response = is.readInt(); // Leer respuesta del servidor
+            if (response == Protocol.ERROR_NO_ERROR) {
+                return (List<Linea>) is.readObject(); // Leer y devolver la lista de Linea asociadas a la factura
+            } else {
+                throw new Exception("ERROR AL BUSCAR FACTURA");
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return new ArrayList<>(); // Retornar una lista vacía en caso de error
+        }
+    }
 
     //===================== LINEA =====================
 
     @Override
-    public void create(Lineas e) throws Exception {
+    public void create(Linea e) throws Exception {
+
         os.writeInt(Protocol.LINEA_CREATE);
         os.writeObject(e);
         os.flush();
@@ -355,7 +423,8 @@ public class Service implements IService{
     }
 
     @Override
-    public List<Linea> search(Linea e) throws Exception {
+    public List<Linea> search(Linea e) {
+        try{
         os.writeInt(Protocol.LINEA_SEARCH);
         os.writeObject(e); // Enviar el objeto para buscar
         os.flush();
@@ -366,6 +435,10 @@ public class Service implements IService{
         } else {
             throw new Exception("ERROR AL BUSCAR LÍNEA");
         }
+    } catch (Exception ex) {
+        ex.printStackTrace();
+        return new ArrayList<>(); // Retorna una lista vacía en caso de error
+    }
     }
 
 }
