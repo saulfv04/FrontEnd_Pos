@@ -51,7 +51,7 @@ public class Controller {
 
         if (!categoriasSeleccionadas.isEmpty()) {
             List<String> colList = Arrays.asList(cols);
-            float[][] estadisticasData = Service.instance().getEstadisticas(categoriasSeleccionadas, colList, r);
+            float[][] estadisticasData = Service.instance.getEstadisticas(categoriasSeleccionadas, colList, r);
 
             double[][] data = new double[rowCount][colCount];
             for (int i = 0; i < rowCount; i++) {
@@ -73,7 +73,7 @@ public class Controller {
     }
 
     public void addAllCategorias() throws Exception {
-        List<Categoria> allCategorias = Service.instance().getCategorias();
+        List<Categoria> allCategorias = Service.instance.getCategorias();
         for (Categoria c : allCategorias) {
             if (!model.getCategoriasSeleccionadas().contains(c)) {
                 model.getCategoriasSeleccionadas().add(c);
