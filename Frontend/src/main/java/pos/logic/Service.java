@@ -1,5 +1,7 @@
 package pos.logic;
 
+import pos.presentation.Estadisticas.Rango;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
@@ -421,7 +423,7 @@ public class Service implements IService{
             throw new Exception("ERROR AL ELIMINAR LA LÍNEA");
         }
     }
-
+//
     @Override
     public List<Linea> search(Linea e) {
         try{
@@ -439,6 +441,10 @@ public class Service implements IService{
         ex.printStackTrace();
         return new ArrayList<>(); // Retorna una lista vacía en caso de error
     }
+    }
+
+    public float[][] getEstadisticas(List<Categoria> categorias, List<String> cols, Rango rango){
+        return new float[0][];
     }
 
 }

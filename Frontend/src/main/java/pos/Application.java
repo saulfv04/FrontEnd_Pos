@@ -4,11 +4,11 @@ import pos.logic.Service;
 
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
-
 
 public class Application {
 
@@ -19,14 +19,11 @@ public class Application {
     public static pos.presentation.Cajeros.Controller cajerosController;
     public static pos.presentation.facturar.Controller faturasController;
 
-
     public final static int MODE_CREATE = 1;
     public final static int MODE_EDIT = 2;
     public static Border BORDER_ERROR = BorderFactory.createMatteBorder(0, 0, 2, 0, Color.RED);
 
     public static void main(String[] args) {
-
-
 
         try {
             UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
@@ -42,6 +39,7 @@ public class Application {
             @Override
             public void windowClosing(WindowEvent e) {
                 super.windowClosing(e);
+//                Service.instance().stop();
             }
         });
 
@@ -58,11 +56,7 @@ public class Application {
         window.setLocationRelativeTo(null); // Centrar la ventana
         window.setVisible(true);
 
-
-
     }
-
-
 
     private static void initializeControllers(JTabbedPane tabbedPane) {
         // Inicialización de cada componente
@@ -124,10 +118,6 @@ public class Application {
         Icon historicoIcon = new ImageIcon(pos.Application.class.getResource("/pos/presentation/icons/book.png"));
         tabbedPane.addTab("Historico", historicoIcon, historicoView.getPanel());
 
-
-
     }
-
-
 
 }
