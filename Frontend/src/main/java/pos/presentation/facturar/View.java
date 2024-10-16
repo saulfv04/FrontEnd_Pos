@@ -282,7 +282,7 @@ public class View implements PropertyChangeListener {
                     return;
                 }
                 Linea current= new Linea();
-                Producto currentProd = controller.getCurrentProducto();
+                Producto currentProd = new Producto();
                 currentProd.setCodigo(searchProductoText.getText());
                 Cliente cliente = (Cliente) comboBoxClientes.getSelectedItem();
 

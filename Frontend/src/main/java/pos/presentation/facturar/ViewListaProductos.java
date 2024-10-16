@@ -58,7 +58,7 @@ public class ViewListaProductos implements PropertyChangeListener {
                         return;
                     }
                     Linea current = new Linea();
-                    Producto currentProd = controller.getCurrentProducto();
+                    Producto currentProd = new Producto();
                     int selectedRow = table1.getSelectedRow();
                     currentProd.setCodigo(table1.getValueAt(selectedRow, 0).toString());
                     try {
@@ -121,7 +121,7 @@ public class ViewListaProductos implements PropertyChangeListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Linea current = new Linea();
-                Producto currentProd = controller.getCurrentProducto();
+                Producto currentProd = new Producto();
                 int selectedRow = table1.getSelectedRow();
                 currentProd.setCodigo(table1.getValueAt(selectedRow, 0).toString());
 

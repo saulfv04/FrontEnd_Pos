@@ -24,7 +24,7 @@ public class Controller {
     private Model model;
 
     public Controller(View view, Model model) {
-        model.init( Service.instance.search(new Factura()));
+        model.init( Service.instance().search(new Factura()));
         this.view = view;
         this.model = model;
         view.setController(this);
@@ -33,13 +33,13 @@ public class Controller {
 
     public void search(Factura filter) {
         model.setFilter(filter);
-        model.setList( Service.instance.search(filter));
+        model.setList( Service.instance().search(filter));
     }
 
 
 
     public void setListaLineas(String idFactura) {
-        model.setListaLineas(Service.instance.searchByFacturId(idFactura));
+        model.setListaLineas(Service.instance().searchByFacturId(idFactura));
     }
 
 

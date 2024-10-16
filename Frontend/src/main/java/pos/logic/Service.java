@@ -7,25 +7,35 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class Service implements IService{
-    private static Service theInstace;
-    public static Service instance;
+public class Service implements IServive{
+    private static Service theInstance;
+
+    public static Service instance() {
+        if (theInstance == null) {
+            theInstance = new Service();
+        }
+        return theInstance;
+    }
+
     Socket s;
     ObjectOutputStream os;
     ObjectInputStream is;
-    public Service(){
-        try{
-            s= new Socket(Protocol.SERVER,Protocol.PORT);
+
+    public Service() {
+        try {
+            s = new Socket(Protocol.SERVER, Protocol.PORT);
             os = new ObjectOutputStream(s.getOutputStream());
             is = new ObjectInputStream(s.getInputStream());
-        }catch (Exception e){
+        } catch (Exception e) {
             System.exit(-1);
         }
     }
+
 
     //===================== PRODUCTO =====================
 
@@ -42,7 +52,6 @@ public class Service implements IService{
         os.writeInt(Protocol.PRODUCTO_READ);
         os.writeObject(e);
         os.flush();
-
         int response = is.readInt();
         if (response == Protocol.ERROR_NO_ERROR) {
             return (Producto) is.readObject(); // Leer y devolver el objeto Producto
@@ -129,16 +138,26 @@ public class Service implements IService{
     }
 
     @Override
-    public List<Categoria> getCategorias(){
+    public List<Categoria> getCategorias() {
         try {
-            os.writeInt(Protocol.CATEGORIA_GETCATEGORIAS);
-            os.writeObject(e);
+            os.writeInt(Protocol.CATEGORIAS_GETCATEGORIAS);
             os.flush();
-
             int response = is.readInt();
             if (response == Protocol.ERROR_NO_ERROR) {
-                // Leer la lista de categorías
-                return (List<Categoria>) is.readObject();
+                Object result = is.readObject();
+                System.out.println("Objeto recibido: " + result.getClass().getName());
+
+                if (result instanceof List<?>) {
+                    // Verificar el contenido de la lista antes de hacer el casting
+                    List<?> list = (List<?>) result;
+                    if (!list.isEmpty() && list.get(0) instanceof Categoria) {
+                        return (List<Categoria>) list;
+                    } else {
+                        throw new Exception("El servidor devolvió una lista, pero no contiene objetos Categoria.");
+                    }
+                } else {
+                    throw new Exception("El servidor no devolvió una lista de categorías.");
+                }
             } else {
                 throw new Exception("ERROR AL BUSCAR CATEGORIA");
             }
@@ -149,6 +168,7 @@ public class Service implements IService{
     }
 
     //===================== CLIENTE =====================
+
 
     @Override
     public void create(Cliente e) throws Exception {
@@ -291,13 +311,22 @@ public class Service implements IService{
 
     @Override
     public void create(Factura e) throws Exception {
-        os.writeInt(Protocol.FACTURA_CREATE);
-        os.writeObject(e);
-        os.flush();
-        if (is.readInt() == Protocol.ERROR_NO_ERROR) {
-            // Éxito
-        } else {
-            throw new Exception("FACTURA DUPLICADA");
+        os.writeInt(Protocol.FACTURA_CREATE); // Envía el protocolo para crear una factura
+        os.writeObject(e); // Envía el objeto Factura
+        os.flush(); // Asegura que los datos se envíen al servidor
+
+        // Espera la respuesta del servidor
+        try {
+            int response = is.readInt();
+            if (response == Protocol.ERROR_NO_ERROR) {
+                // Éxito: la factura fue creada correctamente
+            } else {
+                throw new Exception("FACTURA DUPLICADA"); // Manejo de error si la factura ya existe
+            }
+        } catch (SocketTimeoutException ex) {
+            throw new Exception("Timeout al esperar respuesta del servidor", ex);
+        } catch (IOException ex) {
+            throw new Exception("Error de comunicación con el servidor", ex);
         }
     }
 
@@ -337,23 +366,24 @@ public class Service implements IService{
         }
     }
 
+
     @Override
     public List<Factura> search(Factura e) {
-        try{
-        os.writeInt(Protocol.FACTURA_SEARCH);
-        os.writeObject(e); // Enviar el objeto para buscar
-        os.flush();
+        try {
+            os.writeInt(Protocol.FACTURA_SEARCH);
+            os.writeObject(e); // Enviar el objeto para buscar
+            os.flush();
 
-        int response = is.readInt();
-        if (response == Protocol.ERROR_NO_ERROR) {
-            return (List<Factura>) is.readObject(); // Leer y devolver la lista de facturas
-        } else {
-            throw new Exception("ERROR AL BUSCAR FACTURA");
+            int response = is.readInt(); // Leer la respuesta del servidor
+            if (response == Protocol.ERROR_NO_ERROR) {
+                return (List<Factura>) is.readObject(); // Leer y devolver la lista de facturas
+            } else {
+                throw new Exception("ERROR AL BUSCAR FACTURA");
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return new ArrayList<>(); // Retorna una lista vacía en caso de error
         }
-    } catch (Exception ex) {
-        ex.printStackTrace();
-        return new ArrayList<>(); // Retorna una lista vacía en caso de error
-    }
     }
     public List<Linea> searchByFacturId(String facturaId) {
         try {
@@ -443,8 +473,11 @@ public class Service implements IService{
     }
     }
 
-    public float[][] getEstadisticas(List<Categoria> categorias, List<String> cols, Rango rango){
+    public float[][] getEstadisticas(List<Categoria> categorias, List<String> cols, Rango rango) {
         return new float[0][];
     }
+
+
+
 
 }
