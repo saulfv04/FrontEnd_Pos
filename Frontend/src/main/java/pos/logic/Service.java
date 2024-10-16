@@ -307,6 +307,7 @@ public class Service implements IServive{
         }
     }
 
+
     //===================== FACTURA =====================
 
     @Override
@@ -453,7 +454,7 @@ public class Service implements IServive{
             throw new Exception("ERROR AL ELIMINAR LA LÍNEA");
         }
     }
-//
+
     @Override
     public List<Linea> search(Linea e) {
         try{
@@ -473,11 +474,67 @@ public class Service implements IServive{
     }
     }
 
+    //===================== ESTADISTICAS =====================
+
     public float[][] getEstadisticas(List<Categoria> categorias, List<String> cols, Rango rango) {
         return new float[0][];
     }
 
+    //===================== Usuario =====================
 
+    @Override
+    public void create(Usuarios e) throws Exception {
+        os.writeInt(Protocol.USUARIO_CREATE);
+        os.writeObject(e);
+        os.flush();
+        if (is.readInt() == Protocol.ERROR_NO_ERROR) {
+            // Éxito
+        } else {
+            throw new Exception("USUARIO DUPLICADO");
+        }
+    }
+
+    @Override
+    public Usuarios read(Usuarios e) throws Exception {
+        os.writeInt(Protocol.USUARIO_READ);
+        os.writeObject(e);
+        os.flush();
+
+        int response = is.readInt();
+        if (response == Protocol.ERROR_NO_ERROR) {
+            return (Usuarios) is.readObject(); // Leer y devolver el objeto Factura
+        } else {
+            throw new Exception("ERROR AL LEER EL USUARIO");
+        }
+    }
+    @Override
+    public void delete(Usuarios e) throws Exception {
+        os.writeInt(Protocol.USUARIO_DELETE);
+        os.writeObject(e);
+        os.flush();
+        if (is.readInt() != Protocol.ERROR_NO_ERROR) {
+            throw new Exception("ERROR AL ELIMINAR EL USUARIO");
+        }
+    }
+
+    @Override
+    public List<Usuarios> search(Usuarios e) {
+        try {
+            os.writeInt(Protocol.USUARIO_SEARCH);
+            os.writeObject(e); // Enviar el objeto para buscar
+            os.flush();
+
+            int response = is.readInt();
+            if (response == Protocol.ERROR_NO_ERROR) {
+                return (List<Usuarios>) is.readObject(); // Leer y devolver la lista de cajeros
+            } else {
+                throw new Exception("ERROR AL BUSCAR USUARIO");
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return new ArrayList<>(); // Retorna una lista vacía en caso de error
+        }
+    }
 
 
 }

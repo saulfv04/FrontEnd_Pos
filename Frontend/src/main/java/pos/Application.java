@@ -1,6 +1,7 @@
 package pos;
 
 import pos.logic.Service;
+import pos.logic.Usuarios;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -9,11 +10,12 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.List;
 
 public class Application {
 
-    public static JFrame window;
 
+    public static JFrame window;
     public static pos.presentation.clientes.Controller clientesController;
     public static pos.presentation.producto.Controller productosController;
     public static pos.presentation.Cajeros.Controller cajerosController;
@@ -28,9 +30,17 @@ public class Application {
         try {
             UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
         } catch (Exception ex) {
-            ex.printStackTrace(); // Para depuración
+            ex.printStackTrace();
         }
 
+        // Autenticación
+        boolean authenticated = authenticateUser(); // Método para autenticar
+        if (!authenticated) {
+            JOptionPane.showMessageDialog(null, "Autenticación fallida. El programa se cerrará.");
+            System.exit(0);  // Cerrar la aplicación si no se autenticó correctamente
+        }
+
+        // Crear la ventana principal
         window = new JFrame();
         JTabbedPane tabbedPane = new JTabbedPane();
         window.setContentPane(tabbedPane);
@@ -39,15 +49,11 @@ public class Application {
             @Override
             public void windowClosing(WindowEvent e) {
                 super.windowClosing(e);
-//                Service.instance().stop();
             }
         });
 
-        // Inicializar modelos y vistas
         initializeControllers(tabbedPane);
 
-
-        // Configuración del JFrame
         window.setSize(900, 550);
         window.setResizable(false);
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -55,7 +61,52 @@ public class Application {
         window.setTitle("POS: Point Of Sale");
         window.setLocationRelativeTo(null); // Centrar la ventana
         window.setVisible(true);
+    }
 
+    // Método para autenticar al usuario
+    public  static boolean authenticateUser() {
+        JPanel panel = new JPanel(new GridLayout(2, 2));
+        JLabel labelId = new JLabel("ID:");
+        JLabel labelClave = new JLabel("Clave:");
+        JTextField fieldId = new JTextField();
+        JPasswordField fieldClave = new JPasswordField();
+
+        panel.add(labelId);
+        panel.add(fieldId);
+        panel.add(labelClave);
+        panel.add(fieldClave);
+
+        int option = JOptionPane.showConfirmDialog(null, panel, "Ingrese sus credenciales", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+        if (option == JOptionPane.OK_OPTION) {
+            String id = fieldId.getText();
+            String clave = new String(fieldClave.getPassword());
+
+            // Aquí llamas a tu lógica de validación de usuario
+            return validateCredentials(id, clave);  // Este método debe validar contra la base de datos
+        } else {
+            return false;  // Usuario canceló el diálogo
+        }
+    }
+
+    // Método que valida las credenciales contra la base de datos (dummy aquí)
+    public static boolean validateCredentials(String id, String clave) {
+        try {
+            // Obtener la lista total de usuarios
+            List<Usuarios> usuariosTotales = Service.instance().search(new Usuarios());
+
+            // Recorrer la lista para verificar las credenciales
+            for (Usuarios usuario : usuariosTotales) {
+                // Comparar el id y la clave
+                if (usuario.getId().equals(id) && usuario.getClave().equals(clave)) {
+                    return true;  // Las credenciales son correctas
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();  // Para depuración
+        }
+
+        return false;  // El usuario no existe o la clave no coincide
     }
 
     private static void initializeControllers(JTabbedPane tabbedPane) {
