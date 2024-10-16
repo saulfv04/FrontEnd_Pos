@@ -24,7 +24,7 @@ public class Controller {
     Model model;
 
     public Controller(View view, Model model) {
-        model.init(Service.instance.search(new Cliente()));
+        model.init(Service.instance().search(new Cliente()));
         this.view = view;
         this.model = model;
         view.setController(this);
@@ -35,16 +35,16 @@ public class Controller {
         model.setFilter(filter);
         model.setMode(Application.MODE_CREATE);
         model.setCurrent(new Cliente());
-        model.setList( Service.instance.search(model.getFilter()));
+        model.setList( Service.instance().search(model.getFilter()));
     }
 
     public void save(Cliente e) throws  Exception{
         switch (model.getMode()) {
             case Application.MODE_CREATE:
-                Service.instance.create(e);
+                Service.instance().create(e);
                 break;
             case Application.MODE_EDIT:
-                Service.instance.update(e);
+                Service.instance().update(e);
                 break;
         }
         model.setFilter(new Cliente());
@@ -55,12 +55,12 @@ public class Controller {
         Cliente e = model.getList().get(row);
         try {
             model.setMode(Application.MODE_EDIT);
-            model.setCurrent( Service.instance.read(e));
+            model.setCurrent( Service.instance().read(e));
         } catch (Exception ex) {}
     }
 
     public void delete() throws Exception {
-        Service.instance.delete(model.getCurrent());
+        Service.instance().delete(model.getCurrent());
         search(model.getFilter());
     }
 

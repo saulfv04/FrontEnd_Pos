@@ -14,7 +14,7 @@ public class Controller {
 
 
     public Controller(View view, Model model) {
-        List<Categoria> allCategorias = Service.instance().getCategorias();
+        List<Categoria> allCategorias = getCategoria();
         model.init(allCategorias);
         this.view = view;
         this.model = model;
@@ -51,7 +51,7 @@ public class Controller {
 
         if (!categoriasSeleccionadas.isEmpty()) {
             List<String> colList = Arrays.asList(cols);
-            float[][] estadisticasData = Service.instance.getEstadisticas(categoriasSeleccionadas, colList, r);
+            float[][] estadisticasData = Service.instance().getEstadisticas(categoriasSeleccionadas, colList, r);
 
             double[][] data = new double[rowCount][colCount];
             for (int i = 0; i < rowCount; i++) {
@@ -73,7 +73,7 @@ public class Controller {
     }
 
     public void addAllCategorias() throws Exception {
-        List<Categoria> allCategorias = Service.instance.getCategorias();
+        List<Categoria> allCategorias = getCategoria();
         for (Categoria c : allCategorias) {
             if (!model.getCategoriasSeleccionadas().contains(c)) {
                 model.getCategoriasSeleccionadas().add(c);
@@ -101,7 +101,7 @@ public class Controller {
     public void clearAllCategorias(int anioInicio, int anioFinal, int mesInicio, int mesFinal) throws Exception {
         model.setCategoriasSeleccionadas(new ArrayList<Categoria>());
         if (model.getCategoriasSeleccionadas().isEmpty()) {
-            model.init(Service.instance.getCategorias());
+            model.init(Service.instance().search(new Categoria()));
             //            Service.instance().getCategorias()
         }
         actualizarRango(anioInicio, anioFinal, mesInicio, mesFinal);
@@ -110,7 +110,7 @@ public class Controller {
     public void clearCategoriaEspecifica(int selectedRow,int anioInicio, int anioFinal, int mesInicio, int mesFinal) throws Exception {
         model.getCategoriasSeleccionadas().remove(selectedRow);
         if(model.getCategoriasSeleccionadas().isEmpty()){
-            model.init(Service.instance.getCategorias());
+            model.init(Service.instance().search(new Categoria()));
 //            Service.instance().getCategorias()
         }
         actualizarRango(anioInicio, anioFinal, mesInicio, mesFinal);

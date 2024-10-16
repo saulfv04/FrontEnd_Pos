@@ -12,7 +12,7 @@ public class Controller {
 
 
     public Controller(View view, Model model) {
-        model.init(new ArrayList<Linea>(),  Service.instance.search(new Producto()),  Service.instance.search(new Cajero()), Service.instance.search(new Cliente()));
+        model.init(new ArrayList<Linea>(),  Service.instance().search(new Producto()),  Service.instance().search(new Cajero()), Service.instance().search(new Cliente()));
         this.view = view;
         this.model = model;
         view.setController(this);
@@ -20,7 +20,7 @@ public class Controller {
     }
 
     public void search(Producto filter) throws Exception {
-        model.setListaProducto( Service.instance.search(filter));
+        model.setListaProducto( Service.instance().search(filter));
     }
 
     public void searchLinea(Linea filter) throws Exception {
@@ -28,11 +28,11 @@ public class Controller {
     }
 
     public void searchFactura(Factura filter) throws Exception {
-        model.setList(Service.instance.search(filter));
+        model.setList(Service.instance().search(filter));
     }
 
     public void save(Factura e) throws Exception {
-        Service.instance.create(e);
+        Service.instance().create(e);
         searchFactura(new Factura());
     }
 
@@ -57,16 +57,14 @@ public class Controller {
     //Dudas en este método
     public void setExistencias(List<Linea>lineas) throws Exception {
         List<Producto> productos = model.getListaProductos(); // Obtener la lista de productos desde el servicio
-        Service productoDao= new Service();
 
         for (Linea linea : lineas) {
             for (Producto producto : productos) {
                 if (Objects.equals(linea.getProducto().getCodigo(), producto.getCodigo())) { // Comparar por el ID o algún identificador único
                     // Actualizar las existencias localmente
                     producto.setExistencia(producto.getExistencia() - linea.getCantidad());
-
                     // Llamar a ProductoDAO para actualizar las existencias en la base de datos
-                    productoDao.updateExistencias(producto);
+                    Service.instance().updateExistencias(producto);
 
                     break; // Salir del bucle una vez actualizado el producto
                 }
@@ -106,10 +104,10 @@ public class Controller {
 
 
     public Producto leerProducto(Producto prod) throws Exception {
-        return Service.instance.read(prod);
+        return Service.instance().read(prod);
     }
     public Cajero leerCajero(Cajero cajero) throws Exception {
-        return  Service.instance.read(cajero);
+        return  Service.instance().read(cajero);
     }
 
     public void createLinea(Linea linea) throws Exception {

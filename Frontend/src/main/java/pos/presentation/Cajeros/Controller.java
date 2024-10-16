@@ -25,7 +25,7 @@ public class Controller {
     pos.presentation.Cajeros.Model model;
 
     public Controller(View view, Model model) {
-        model.init(  Service.instance.search(new Cajero()));
+        model.init(  Service.instance().search(new Cajero()));
         this.view = view;
         this.model = model;
         view.setController(this);
@@ -36,16 +36,16 @@ public class Controller {
         model.setFilter(filter);
         model.setMode(Application.MODE_CREATE);
         model.setCurrent(new Cajero());
-        model.setList( Service.instance.search(model.getFilter()));
+        model.setList( Service.instance().search(model.getFilter()));
     }
 
     public void save(Cajero e) throws  Exception{
         switch (model.getMode()) {
             case Application.MODE_CREATE:
-                Service.instance.create(e);
+                Service.instance().create(e);
                 break;
             case Application.MODE_EDIT:
-                Service.instance.update(e);
+                Service.instance().update(e);
                 break;
         }
         model.setFilter(new Cajero());
@@ -56,12 +56,12 @@ public class Controller {
         Cajero e = model.getList().get(row);
         try {
             model.setMode(Application.MODE_EDIT);
-            model.setCurrent( Service.instance.read(e));
+            model.setCurrent( Service.instance().read(e));
         } catch (Exception ex) {}
     }
 
     public void delete() throws Exception {
-        Service.instance.delete(model.getCurrent());
+        Service.instance().delete(model.getCurrent());
         search(model.getFilter());
     }
 
