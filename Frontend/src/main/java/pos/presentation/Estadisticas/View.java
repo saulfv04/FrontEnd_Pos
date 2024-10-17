@@ -138,7 +138,6 @@ public class View implements PropertyChangeListener {
                 if(seleccion!=null){
                     try {
                         controller.addCategotiriaSeleccionada((Categoria) comboBox5.getSelectedItem());
-
                     } catch (Exception ex) {
                         throw new RuntimeException(ex);
                     }

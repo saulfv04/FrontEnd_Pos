@@ -2,7 +2,7 @@ package pos.presentation.Estadisticas;
 
 import pos.logic.Categoria;
 import pos.presentation.AbstractModel;
-
+import pos.logic.Rango;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
