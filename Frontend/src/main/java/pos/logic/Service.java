@@ -4,7 +4,6 @@ import pos.presentation.Estadisticas.Rango;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
@@ -12,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class Service implements IServive{
+public class Service implements IService{
     private static Service theInstance;
 
     public static Service instance() {
@@ -474,11 +473,6 @@ public class Service implements IServive{
     }
     }
 
-    //===================== ESTADISTICAS =====================
-
-    public float[][] getEstadisticas(List<Categoria> categorias, List<String> cols, Rango rango) {
-        return new float[0][];
-    }
 
     //===================== Usuario =====================
 
@@ -535,6 +529,32 @@ public class Service implements IServive{
             return new ArrayList<>(); // Retorna una lista vacía en caso de error
         }
     }
+
+    @Override
+    public float[][] estadisticas(List<Categoria> list, List<String> list1, pos.logic.Rango rango) throws Exception {
+        try {
+            // 1. Escribir la solicitud al servidor
+            os.writeInt(Protocol.ESTADISTICAS_GETFACTURAS); // Indicar la operación
+            os.writeObject(list); // Enviar la lista de categorías
+            os.writeObject(list1); // Enviar la lista de columnas
+            os.writeObject(rango); // Enviar el rango
+            os.flush();
+
+            // 2. Leer la respuesta del servidor
+            int errorCode = is.readInt(); // Leer si hay error o no
+            if (errorCode == Protocol.ERROR_NO_ERROR) {
+                // Aquí debes leer directamente el objeto, no un segundo int
+                float[][] resultado = (float[][]) is.readObject(); // Leer el resultado (matriz de float)
+                return resultado; // Devolver el resultado
+            } else {
+                throw new Exception("ERROR: El servidor retornó un error al procesar las estadísticas.");
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace(); // Depuración
+            throw new Exception("ERROR: No se pudieron obtener las estadísticas.", ex);
+        }
+    }
+
 
 
 }
