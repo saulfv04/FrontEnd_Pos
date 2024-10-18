@@ -49,12 +49,6 @@ public class View implements PropertyChangeListener {
     }
 
     public View() {
-        comboBox5.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                updateComboBoxCategorias();
-            }
-        });
         anioInicio.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
@@ -137,7 +131,8 @@ public class View implements PropertyChangeListener {
                 Object seleccion= comboBox5.getSelectedItem();
                 if(seleccion!=null){
                     try {
-                        controller.addCategotiriaSeleccionada((Categoria) comboBox5.getSelectedItem());
+                        controller.addCategotiriaSeleccionada((Categoria)seleccion);
+
                     } catch (Exception ex) {
                         throw new RuntimeException(ex);
                     }
