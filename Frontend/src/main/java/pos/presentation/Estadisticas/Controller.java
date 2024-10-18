@@ -48,7 +48,6 @@ public class Controller {
                 year++;
             }
         }
-
         if (!categoriasSeleccionadas.isEmpty()) {
             List<String> colList = Arrays.asList(cols);
             float[][] estadisticasData = Service.instance().estadisticas(categoriasSeleccionadas, colList, r);
@@ -92,11 +91,27 @@ public class Controller {
 
 
     public void addCategotiriaSeleccionada(Categoria c) throws Exception {
-        if(!model.getCategoriasSeleccionadas().contains(c)) {
-            model.getCategoriasSeleccionadas().add(c);
+        // Obtener la lista de categorías seleccionadas
+
+        List<Categoria> categoriasSeleccionadas = model.getCategoriasSeleccionadas();
+        // Verificar si la categoría ya está seleccionada
+        List<Categoria> listaNueva= new ArrayList<>();
+        for (Categoria cc: categoriasSeleccionadas){
+            listaNueva.add(cc);
+        }
+        if (!listaNueva.contains(c)) {
+            // Si no está seleccionada, agregarla a la lista
+            listaNueva.add(c);
+            model.setAllcategoriasSeleccionadas(listaNueva);
             actualizarData();
-        }else{
-            JOptionPane.showMessageDialog(view.getPanel(),"La categoria ya se encuentra seleccionada", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        // Verificar si la categoría ya está seleccionada
+        else {
+            // Si ya está seleccionada, mostrar un mensaje de error
+            JOptionPane.showMessageDialog(view.getPanel(),
+                    "La categoría ya se encuentra seleccionada",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
