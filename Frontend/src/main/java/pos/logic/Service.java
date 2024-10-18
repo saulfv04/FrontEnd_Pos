@@ -555,6 +555,15 @@ public class Service implements IService{
         }
     }
 
+    @Override
+    public void exit() {
+        try{
+            os.writeInt(Protocol.EXIT); // Indicar la operación
+            os.flush();
+        }catch (Exception ex){
+            ex.printStackTrace(); // Depuración
+        }
+    }
 
 
 }
