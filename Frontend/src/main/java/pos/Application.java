@@ -1,7 +1,10 @@
 package pos;
 
+import org.apache.commons.imaging.formats.jpeg.iptc.IptcRecord;
 import pos.logic.Service;
 import pos.logic.Usuarios;
+import pos.presentation.Usuario.Controller;
+import pos.presentation.Usuario.Model;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -20,6 +23,16 @@ public class Application {
     public static pos.presentation.producto.Controller productosController;
     public static pos.presentation.Cajeros.Controller cajerosController;
     public static pos.presentation.facturar.Controller faturasController;
+    public static pos.presentation.Usuario.Controller usuarioController;  // Vista de usuario
+    public static Usuarios usuario;  // Vista de usuario
+
+    public static Usuarios getUsuario() {
+        return usuario;
+    }
+
+    public static void setUsuario(Usuarios usuario) {
+        Application.usuario = usuario;
+    }
 
     public final static int MODE_CREATE = 1;
     public final static int MODE_EDIT = 2;
@@ -43,8 +56,9 @@ public class Application {
         // Crear la ventana principal
         window = new JFrame();
         JTabbedPane tabbedPane = new JTabbedPane();
-        window.setContentPane(tabbedPane);
 
+
+        window.setContentPane(tabbedPane);
         window.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -54,12 +68,12 @@ public class Application {
         });
 
         initializeControllers(tabbedPane);
+        initializeUsuarios(tabbedPane);
 
         window.setSize(900, 550);
         window.setResizable(false);
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         window.setIconImage((new ImageIcon(pos.Application.class.getResource("presentation/icons/icon.png"))).getImage());
-        window.setTitle("POS: Point Of Sale");
         window.setLocationRelativeTo(null); // Centrar la ventana
         window.setVisible(true);
     }
@@ -100,6 +114,7 @@ public class Application {
             for (Usuarios usuario : usuariosTotales) {
                 // Comparar el id y la clave
                 if (usuario.getId().equals(id) && usuario.getClave().equals(clave)) {
+                    setUsuario(usuario);
                     return true;  // Las credenciales son correctas
                 }
             }
@@ -170,6 +185,27 @@ public class Application {
         Icon historicoIcon = new ImageIcon(pos.Application.class.getResource("/pos/presentation/icons/book.png"));
         tabbedPane.addTab("Historico", historicoIcon, historicoView.getPanel());
 
+    }
+
+    private  static  void initializeUsuarios(JTabbedPane tabbedPane){
+        // Instanciar vista y modelo de usuario
+        pos.presentation.Usuario.View usuariosView = new pos.presentation.Usuario.View();
+        pos.presentation.Usuario.Model usuariosModel = new pos.presentation.Usuario.Model();
+        usuarioController = new pos.presentation.Usuario.Controller(usuariosView, usuariosModel);
+
+        // Configurar el JSplitPane con el panel de pestañas a la izquierda y el panel de usuarios a la derecha
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, tabbedPane, usuariosView.getPanel());
+        splitPane.setDividerLocation(700);  // Ajustar la ubicación del divisor
+        splitPane.setEnabled(false);  // Deshabilitar el movimiento del divisor
+
+        // Establecer información del usuario (esto puede depender de tu lógica de datos)
+        usuariosView.setUsuarios(usuario);
+
+        // Actualizar el título de la ventana con el ID del usuario actual
+        window.setTitle("POS: Point Of Sale - " + usuariosView.getModel().getCurrent().getId());
+
+        // Establecer el contenido de la ventana
+        window.setContentPane(splitPane);
     }
 
 }
