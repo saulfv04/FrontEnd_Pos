@@ -9,14 +9,13 @@ import java.util.Objects;
 public class Controller {
     private View view;
     private Model model;
-
-
     public Controller(View view, Model model) {
         model.init(new ArrayList<Linea>(),  Service.instance().search(new Producto()),  Service.instance().search(new Cajero()), Service.instance().search(new Cliente()));
         this.view = view;
         this.model = model;
         view.setController(this);
         view.setModel(model);
+
     }
 
     public void search(Producto filter) throws Exception {

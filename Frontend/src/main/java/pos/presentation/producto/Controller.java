@@ -19,12 +19,14 @@ import com.itextpdf.layout.properties.TextAlignment;
 import pos.Application;
 import pos.logic.Producto;
 import pos.logic.Service;
+import pos.logic.SocketListener;
+import pos.logic.ThreadListener;
 
-public class Controller {
+public class Controller implements ThreadListener {
 
     View view;
     Model model;
-
+    SocketListener socketListener;
     public Controller(View view, Model model) {
         model.init( Service.instance().search(new Producto()));
         model.setCategorias( Service.instance().getCategorias());
@@ -32,6 +34,10 @@ public class Controller {
         this.model = model;
         view.setController(this);
         view.setModel(model);
+        try {
+            socketListener = new SocketListener(this, Service.instance().getSid());
+            socketListener.start();
+        }catch (Exception e){}
     }
 
     public void search(Producto filter) throws  Exception{
@@ -130,5 +136,10 @@ public class Controller {
         cell.setPadding(0);
         if(!hasBorder) cell.setBorder(Border.NO_BORDER);
         return cell;
+    }
+
+    @Override
+    public void deliver_message(String message) {
+        try {search(new Producto());}catch (Exception e){}
     }
 }
