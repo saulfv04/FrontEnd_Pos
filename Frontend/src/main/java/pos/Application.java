@@ -50,6 +50,7 @@ public class Application {
         boolean authenticated = authenticateUser(); // Método para autenticar
         if (!authenticated) {
             JOptionPane.showMessageDialog(null, "Autenticación fallida. El programa se cerrará.");
+            Service.instance().exit();
             System.exit(0);  // Cerrar la aplicación si no se autenticó correctamente
         }
 

@@ -24,17 +24,24 @@ public class Service implements IService{
     Socket s;
     ObjectOutputStream os;
     ObjectInputStream is;
-
+    String sid;
     public Service() {
         try {
             s = new Socket(Protocol.SERVER, Protocol.PORT);
             os = new ObjectOutputStream(s.getOutputStream());
             is = new ObjectInputStream(s.getInputStream());
+
+            os.writeInt(Protocol.SYNC);
+            os.flush();
+            sid=(String)is.readObject();
         } catch (Exception e) {
             System.exit(-1);
         }
     }
 
+    public String getSid(){
+        return sid;
+    }
 
     //===================== PRODUCTO =====================
 
@@ -563,6 +570,11 @@ public class Service implements IService{
         }catch (Exception ex){
             ex.printStackTrace(); // Depuración
         }
+    }
+
+    @Override
+    public void deliver_message(String s) {
+
     }
 
 
