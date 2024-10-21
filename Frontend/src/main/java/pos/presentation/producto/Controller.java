@@ -22,11 +22,10 @@ import pos.logic.Service;
 import pos.logic.SocketListener;
 import pos.logic.ThreadListener;
 
-public class Controller implements ThreadListener {
+public class Controller {
 
     View view;
     Model model;
-    SocketListener socketListener;
     public Controller(View view, Model model) {
         model.init( Service.instance().search(new Producto()));
         model.setCategorias( Service.instance().getCategorias());
@@ -34,12 +33,7 @@ public class Controller implements ThreadListener {
         this.model = model;
         view.setController(this);
         view.setModel(model);
-        try {
-            socketListener = new SocketListener(this, Service.instance().getSid());
-            socketListener.start();
-        }catch (Exception e){}
     }
-
     public void search(Producto filter) throws  Exception{
         model.setFilter(filter);
         model.setMode(Application.MODE_CREATE);
@@ -138,8 +132,4 @@ public class Controller implements ThreadListener {
         return cell;
     }
 
-    @Override
-    public void deliver_message(String message) {
-        try {search(new Producto());}catch (Exception e){}
-    }
 }

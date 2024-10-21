@@ -21,26 +21,18 @@ import pos.logic.Service;
 import pos.logic.SocketListener;
 import pos.logic.ThreadListener;
 
-public class Controller implements ThreadListener {
+public class Controller{
 
     pos.presentation.Cajeros.View view;
     pos.presentation.Cajeros.Model model;
-    SocketListener socketListener;
-
     public Controller(View view, Model model) {
         model.init(  Service.instance().search(new Cajero()));
         this.view = view;
         this.model = model;
         view.setController(this);
         view.setModel(model);
-        try{
-            socketListener= new SocketListener(this,Service.instance().getSid());
-            socketListener.start();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
 
+    }
     public void search(Cajero filter) throws  Exception{
         model.setFilter(filter);
         model.setMode(Application.MODE_CREATE);
@@ -129,12 +121,5 @@ public class Controller implements ThreadListener {
         cell.setPadding(0);
         if(!hasBorder) cell.setBorder(Border.NO_BORDER);
         return cell;
-    }
-
-    @Override
-    public void deliver_message(String message) {
-        try{
-            search(new Cajero());
-        }catch (Exception e){}
     }
 }

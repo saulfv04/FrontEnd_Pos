@@ -6,9 +6,9 @@ import pos.presentation.AbstractTableModel;
 
 import java.util.List;
 
-public class TableModel extends AbstractTableModel<Usuarios> implements javax.swing.table.TableModel {
+public class TableModel extends AbstractTableModel<String> implements javax.swing.table.TableModel {
 
-    public TableModel(int[] cols, List<Usuarios> rows) {
+    public TableModel(int[] cols, List<String> rows) {
         super(cols, rows);
     }
 
@@ -16,9 +16,9 @@ public class TableModel extends AbstractTableModel<Usuarios> implements javax.sw
 
 
     @Override
-    protected Object getPropetyAt(Usuarios e, int col) {
+    protected Object getPropetyAt(String e, int col) {
         switch (cols[col]){
-            case ID: return e.getId();
+            case ID: return e;
             default: return "";
         }
     }
