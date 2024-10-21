@@ -193,7 +193,6 @@ public class Application {
         pos.presentation.Usuario.View usuariosView = new pos.presentation.Usuario.View();
         pos.presentation.Usuario.Model usuariosModel = new pos.presentation.Usuario.Model();
         usuarioController = new pos.presentation.Usuario.Controller(usuariosView, usuariosModel);
-
         // Configurar el JSplitPane con el panel de pestañas a la izquierda y el panel de usuarios a la derecha
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, tabbedPane, usuariosView.getPanel());
         splitPane.setDividerLocation(700);  // Ajustar la ubicación del divisor

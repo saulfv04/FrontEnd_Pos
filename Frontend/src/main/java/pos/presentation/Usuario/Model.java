@@ -9,7 +9,7 @@ import java.util.List;
 
 public class Model extends AbstractModel{
 
-        List<Usuarios> list;
+        List<String> list;
         Usuarios current;
         int mode;
 
@@ -23,16 +23,16 @@ public class Model extends AbstractModel{
 
         }
 
-        public void init(List<Usuarios> list){
+        public void init(List<String> list){
             this.list = list;
             this.mode= Application.MODE_CREATE;
         }
 
-        public List<Usuarios> getList() {
+        public List<String> getList() {
             return list;
         }
 
-        public void setList(List<Usuarios> list){
+        public void setList(List<String> list){
             this.list = list;
             firePropertyChange(LIST);
         }
@@ -54,7 +54,7 @@ public class Model extends AbstractModel{
         }
 
 
-        public void addUsuario(Usuarios usuarios){
+        public void addUsuario(String usuarios){
             this.list.add(usuarios);
         }
 

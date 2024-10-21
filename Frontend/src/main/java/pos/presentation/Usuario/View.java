@@ -30,7 +30,7 @@ public class View implements PropertyChangeListener {
     public void setUsuarios(Usuarios usuario){
         this.model.setCurrent(usuario);
     }
-    public void addListaUsuarios(Usuarios usuario){
+    public void addListaUsuarios(String usuario){
         this.model.addUsuario(usuario);
     }
 

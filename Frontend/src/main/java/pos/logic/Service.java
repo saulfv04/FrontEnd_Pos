@@ -2,6 +2,7 @@ package pos.logic;
 
 import pos.presentation.Estadisticas.Rango;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -70,7 +71,6 @@ public class Service implements IService{
         os.writeInt(Protocol.PRODUCTO_UPDATE);
         os.writeObject(e);
         os.flush();
-
         if (is.readInt() != Protocol.ERROR_NO_ERROR) {
             throw new Exception("ERROR AL ACTUALIZAR EL PRODUCTO");
         }
@@ -80,7 +80,6 @@ public class Service implements IService{
         os.writeInt(Protocol.PRODUCTO_DELETE);
         os.writeObject(e);
         os.flush();
-
         if (is.readInt() != Protocol.ERROR_NO_ERROR) {
             throw new Exception("ERROR AL ELIMINAR EL PRODUCTO");
         }
@@ -92,7 +91,6 @@ public class Service implements IService{
             os.writeInt(Protocol.PRODUCTO_SEARCH);
             os.writeObject(e); // Enviar el objeto para buscar
             os.flush();
-
             int response = is.readInt();
             if (response == Protocol.ERROR_NO_ERROR) {
                 return (List<Producto>) is.readObject(); // Leer y devolver la lista de productos
@@ -104,13 +102,13 @@ public class Service implements IService{
         }
     }
 
+
     @Override
     public void updateExistencias(Producto e){
         try {
             os.writeInt(Protocol.PRODUCTO_UPDATE_EXISTENCIAS); // Protocolo para actualización de existencias
             os.writeObject(e); // Enviar el objeto producto con las nuevas existencias
             os.flush();
-
             int response = is.readInt(); // Leer respuesta del servidor
             if (response != Protocol.ERROR_NO_ERROR) {
                 throw new Exception("ERROR AL ACTUALIZAR EXISTENCIAS DEL PRODUCTO");
@@ -129,7 +127,6 @@ public class Service implements IService{
             os.writeInt(Protocol.CATEGORIA_SEARCH);
             os.writeObject(e);
             os.flush();
-
             int response = is.readInt();
             if (response == Protocol.ERROR_NO_ERROR) {
                 // Leer la lista de categorías
@@ -151,6 +148,7 @@ public class Service implements IService{
             int response = is.readInt();
             if (response == Protocol.ERROR_NO_ERROR) {
                 Object result = is.readObject();
+                os.flush();
                 System.out.println("Objeto recibido: " + result.getClass().getName());
 
                 if (result instanceof List<?>) {
@@ -566,7 +564,10 @@ public class Service implements IService{
     public void exit() {
         try{
             os.writeInt(Protocol.EXIT); // Indicar la operación
-            os.flush();
+            os.flush(); // Asegurar que los datos se envíen al servidor
+            os.close();
+            is.close();
+            s.close();
         }catch (Exception ex){
             ex.printStackTrace(); // Depuración
         }
@@ -574,8 +575,36 @@ public class Service implements IService{
 
     @Override
     public void deliver_message(String s) {
-
+        // Muestra una ventana emergente con el mensaje recibido
+        JOptionPane.showMessageDialog(null, s, "Mensaje del Servidor", JOptionPane.INFORMATION_MESSAGE);
     }
 
-
+    @Override
+    public List<String> usuariosActivos() {
+        try {
+            os.writeInt(Protocol.REQUEST_ACTIVE_USERS); // Indicar la operación
+            os.writeObject(sid); // Enviar el sessionId
+            os.flush(); // Asegurar que los datos se envíen al servidor
+            // 2. Leer la respuesta del servidor
+            int errorCode = is.readInt(); // Leer si hay error o no
+            if (errorCode == Protocol.ERROR_NO_ERROR) {
+                // Aquí debes leer directamente el objeto, no un segundo int
+                List<String> resultado = (List<String>) is.readObject(); // Leer el
+                os.flush(); // Asegurar que los datos se envíen al servidor
+                return resultado; // Devolver el resultado
+            } else {
+                throw new Exception("ERROR: El servidor retornó un error al procesar la solicitud de usuarios activos.");
+            }
+        } catch (IOException e) {
+            System.err.println("Error de entrada/salida: " + e.getMessage());
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            System.err.println("Clase no encontrada: " + e.getMessage());
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.err.println("Error inesperado: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return null; // Devuelve null en caso de erro
+    }
 }
