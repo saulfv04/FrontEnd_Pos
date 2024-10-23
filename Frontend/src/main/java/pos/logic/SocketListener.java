@@ -1,5 +1,7 @@
 package pos.logic;
 
+import pos.Application;
+
 import javax.swing.*;
 import java.io.EOFException;
 import java.io.IOException;
@@ -29,11 +31,10 @@ public class SocketListener {
         aos.flush(); // Asegúrate de enviar cualquier encabezado necesario
         ais = new ObjectInputStream(as.getInputStream());
 
-
         this.sid = sid;
         aos.writeInt(Protocol.ASYNC);
         aos.writeObject(sid);
-        pos.Application.setUsuario((Usuarios) ais.readObject());
+        aos.writeObject((String) Application.usuario.getId());
         aos.flush();
     }
 
@@ -71,6 +72,10 @@ public class SocketListener {
                             String message = (String) ais.readObject();
                             deliver(message);
                             break;
+//                        case Protocol.NEW_CONNECTION:
+//                            List<String> activeUsers = getActiveUsers();
+//                            notifyNewConnection(activeUsers);
+//                            break;
                         // Maneja otros casos según sea necesario
                     }
 
@@ -79,10 +84,11 @@ public class SocketListener {
                     ex.printStackTrace();
                 }
             }
-            } catch (Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
+
     public void deliver(final String message) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
@@ -90,9 +96,11 @@ public class SocketListener {
             }
         });
     }
-    public List<String> getActiveUsers() {
-        List<String> activeUsers = new ArrayList<>();
-        activeUsers= Service.instance().usuariosActivos();
-        return activeUsers;
+
+
+    public List<String> getActiveUsers() throws IOException, ClassNotFoundException {
+        aos.writeInt(Protocol.NEW_CONNECTION);
+        aos.flush();
+        return (List<String>) ais.readObject();
     }
 }

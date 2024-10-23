@@ -15,37 +15,40 @@ public class Controller implements ThreadListener {
     pos.presentation.Usuario.View view;
     SocketListener socketListener;
 
-    public Controller(View view,Model model) {
+    public Controller(View view, Model model) {
         model.init(new ArrayList<>());
-        this.view= view;
+        this.view = view;
         this.model = model;
         view.setController(this);
         view.setModel(model);
         try {
-            socketListener= new SocketListener(this,Service.instance().getSid(),Application.usuario.getId());
+            socketListener = new SocketListener(this, Service.instance().getSid(), Application.usuario.getId());
             socketListener.start();
             model.setList(Service.instance().usuariosActivos());
-        }catch (Exception e){
-        }
-    }
-    @Override
-    public void deliver_message(String message) {
-        try{
-
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    public void search(List<String> list) throws  Exception{
-        model.setList(list);
+
+    @Override
+    public void deliver_message(String message) {
+        try {
+            if ("NEW_CONNECTION".equals(message)) {
+                socketListener.deliver("NEW_CONNECTION");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
+    public void search(List<String> list) throws Exception {
+        model.setList(list);
+    }
 
     public void delete() throws Exception {
     }
 
     public void clear() {
     }
-
 
 }

@@ -1,5 +1,6 @@
 package pos.logic;
 
+import pos.Application;
 import pos.presentation.Estadisticas.Rango;
 
 import javax.swing.*;
@@ -583,7 +584,6 @@ public class Service implements IService{
     public List<String> usuariosActivos() {
         try {
             os.writeInt(Protocol.REQUEST_ACTIVE_USERS); // Indicar la operación
-            os.writeObject(sid); // Enviar el sessionId
             os.flush(); // Asegurar que los datos se envíen al servidor
             // 2. Leer la respuesta del servidor
             int errorCode = is.readInt(); // Leer si hay error o no
@@ -606,5 +606,9 @@ public class Service implements IService{
             e.printStackTrace();
         }
         return null; // Devuelve null en caso de erro
+    }
+
+    public void notifyNewConection() {
+//        Application.usuarioController.notifyNewConnection();
     }
 }

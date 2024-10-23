@@ -57,7 +57,7 @@ public class View implements PropertyChangeListener {
         switch (evt.getPropertyName()) {
             case pos.presentation.Usuario.Model.LIST:
                 int[] cols = {pos.presentation.Usuario.TableModel.ID, TableModel.FACTURA};
-                TableUsuarios.setModel(new TableModel(cols,new ArrayList<>()));
+                TableUsuarios.setModel(new TableModel(cols,model.getList()));
                 TableUsuarios.setRowHeight(30);
                 TableColumnModel columnModel = TableUsuarios.getColumnModel();
                 columnModel.getColumn(1).setPreferredWidth(150);
