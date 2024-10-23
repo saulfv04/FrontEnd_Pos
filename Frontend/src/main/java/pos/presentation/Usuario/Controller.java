@@ -22,17 +22,16 @@ public class Controller implements ThreadListener {
         view.setController(this);
         view.setModel(model);
         try {
-            socketListener= new SocketListener(this,Service.instance().getSid());
+            socketListener= new SocketListener(this,Service.instance().getSid(),Application.usuario.getId());
             socketListener.start();
-            model.setList(new ArrayList<>());
+            model.setList(Service.instance().usuariosActivos());
         }catch (Exception e){
-            e.printStackTrace();
         }
     }
     @Override
     public void deliver_message(String message) {
         try{
-            model.setList(Service.instance().usuariosActivos());
+
         }catch (Exception e){
             e.printStackTrace();
         }

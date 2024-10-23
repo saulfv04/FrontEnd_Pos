@@ -1,6 +1,7 @@
 package pos.presentation.Usuario;
 
 import pos.Application;
+import pos.logic.Factura;
 import pos.logic.Usuarios;
 import pos.presentation.AbstractModel;
 
@@ -11,12 +12,14 @@ public class Model extends AbstractModel{
 
         List<String> list;
         Usuarios current;
+        List<Factura> listaFacturas;
         int mode;
 
         @Override
         public void addPropertyChangeListener(PropertyChangeListener listener) {
             super.addPropertyChangeListener(listener);
             firePropertyChange(LIST);
+            firePropertyChange(CURRENT);
         }
 
         public Model() {
@@ -43,6 +46,7 @@ public class Model extends AbstractModel{
 
     public void setCurrent(Usuarios current) {
         this.current = current;
+        firePropertyChange(CURRENT);
     }
 
     public int getMode() {
@@ -53,12 +57,20 @@ public class Model extends AbstractModel{
             this.mode = mode;
         }
 
+    public List<Factura> getListaFacturas() {
+        return listaFacturas;
+    }
 
-        public void addUsuario(String usuarios){
+    public void setListaFacturas(List<Factura> listaFacturas) {
+        this.listaFacturas = listaFacturas;
+    }
+
+    public void addUsuario(String usuarios){
             this.list.add(usuarios);
         }
 
-        public static final String LIST="list";
+    public static final String LIST="list";
+    public static final String CURRENT="Current";
 
 
 }

@@ -1,20 +1,18 @@
 package pos.presentation.Usuario;
 
-import pos.Application;
 import pos.logic.Usuarios;
-import pos.presentation.Cajeros.TableModel;
 
 import javax.swing.*;
 import javax.swing.table.TableColumnModel;
-import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
-import java.util.List;
 
 public class View implements PropertyChangeListener {
     private JPanel panel1;
     private JTable TableUsuarios;
+    private JButton buttonEnviar;
+    private JButton recibirButton;
 
     Model model;
     Controller controller;
@@ -52,25 +50,20 @@ public class View implements PropertyChangeListener {
     }
 
     public View() {
-
-
-
-
-
-
     }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         switch (evt.getPropertyName()) {
             case pos.presentation.Usuario.Model.LIST:
-                int[] cols = {pos.presentation.Usuario.TableModel.ID};
+                int[] cols = {pos.presentation.Usuario.TableModel.ID, TableModel.FACTURA};
                 TableUsuarios.setModel(new TableModel(cols,new ArrayList<>()));
                 TableUsuarios.setRowHeight(30);
                 TableColumnModel columnModel = TableUsuarios.getColumnModel();
-                columnModel.getColumn(0).setPreferredWidth(150);
+                columnModel.getColumn(1).setPreferredWidth(150);
                 break;
-            case pos.presentation.Cajeros.Model.CURRENT:
         }
     }
+
+
 }

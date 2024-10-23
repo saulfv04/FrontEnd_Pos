@@ -18,7 +18,7 @@ public class SocketListener {
     ObjectOutputStream aos;
     ObjectInputStream ais;
 
-    public SocketListener(ThreadListener listener, String sid) throws Exception {
+    public SocketListener(ThreadListener listener, String sid, String usuario) throws Exception {
         this.listener = listener;
 
         // Inicializar el socket primero
@@ -33,6 +33,7 @@ public class SocketListener {
         this.sid = sid;
         aos.writeInt(Protocol.ASYNC);
         aos.writeObject(sid);
+        pos.Application.setUsuario((Usuarios) ais.readObject());
         aos.flush();
     }
 
@@ -72,21 +73,14 @@ public class SocketListener {
                             break;
                         // Maneja otros casos según sea necesario
                     }
-                } catch (ClassNotFoundException e) {
-                    System.err.println("Clase no encontrada al leer el objeto: " + e.getMessage());
-                    e.printStackTrace();
-                } catch (SocketException e) {
-                    System.out.println("Error de socket, posiblemente el servidor se desconectó.");
-                    condition = false; // Detener el hilo si ocurre un error en el socket
-                } catch (IOException e) {
-                    System.err.println("Error de entrada/salida: " + e.getMessage());
-                    e.printStackTrace();
-                    condition = false; // Asegura que el hilo se detenga en caso de otros errores
+
+                } catch (Exception ex) {
+                    System.err.println("Error en el hilo de escucha: " + ex.getMessage());
+                    ex.printStackTrace();
                 }
             }
-        } catch (Exception ex) {
-            System.err.println("Error en el hilo de escucha: " + ex.getMessage());
-            ex.printStackTrace();
+            } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
     public void deliver(final String message) {

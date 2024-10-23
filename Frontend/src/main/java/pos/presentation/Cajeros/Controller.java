@@ -21,7 +21,7 @@ import pos.logic.Service;
 import pos.logic.SocketListener;
 import pos.logic.ThreadListener;
 
-public class Controller{
+public class Controller implements ThreadListener{
 
     pos.presentation.Cajeros.View view;
     pos.presentation.Cajeros.Model model;
@@ -121,5 +121,10 @@ public class Controller{
         cell.setPadding(0);
         if(!hasBorder) cell.setBorder(Border.NO_BORDER);
         return cell;
+    }
+
+    @Override
+    public void deliver_message(String message) {
+        Service.instance().deliver_message(message);
     }
 }
