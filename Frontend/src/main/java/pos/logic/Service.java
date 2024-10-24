@@ -586,17 +586,14 @@ public class Service implements IService{
     }
 
     @Override
-    public List<String> usuariosActivos() {
+    public List<Usuarios> usuariosActivos() {
         try {
-            os.writeInt(Protocol.REQUEST_ACTIVE_USERS); // Indicar la operación
-            os.flush(); // Asegurar que los datos se envíen al servidor
-            // 2. Leer la respuesta del servidor
-            int errorCode = is.readInt(); // Leer si hay error o no
+            os.writeInt(Protocol.REQUEST_ACTIVE_USERS);
+            os.flush();
+            int errorCode = is.readInt();
             if (errorCode == Protocol.ERROR_NO_ERROR) {
-                // Aquí debes leer directamente el objeto, no un segundo int
-                List<String> resultado = (List<String>) is.readObject(); // Leer el
-                os.flush(); // Asegurar que los datos se envíen al servidor
-                return resultado; // Devolver el resultado
+                List<Usuarios> resultado = (List<Usuarios>) is.readObject();
+                return resultado;
             } else {
                 throw new Exception("ERROR: El servidor retornó un error al procesar la solicitud de usuarios activos.");
             }
@@ -622,5 +619,10 @@ public class Service implements IService{
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public List<Factura> enviarFacturas() throws Exception {
+        return List.of();
     }
 }

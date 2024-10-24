@@ -31,7 +31,7 @@ public class View implements PropertyChangeListener {
     public void setUsuarios(Usuarios usuario){
         this.model.setCurrent(usuario);
     }
-    public void addListaUsuarios(String usuario){
+    public void addListaUsuarios(Usuarios usuario){
         this.model.addUsuario(usuario);
     }
 
@@ -64,17 +64,17 @@ public class View implements PropertyChangeListener {
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         switch (evt.getPropertyName()) {
-            case pos.presentation.Usuario.Model.LIST:
+            case Model.LISTUSUARIOS:
                 int[] cols = {pos.presentation.Usuario.TableModel.ID, TableModel.FACTURA};
-                TableUsuarios.setModel(new TableModel(cols,model.getList()));
+                TableUsuarios.setModel(new TableModel(cols,model.getListUsuarios()));
                 TableUsuarios.setRowHeight(30);
                 TableColumnModel columnModel = TableUsuarios.getColumnModel();
                 columnModel.getColumn(1).setPreferredWidth(150);
                 break;
             case Model.LISTA_FACTURAS:
                 int[] cols1 = {pos.presentation.Usuario.TableModel.ID, TableModel.FACTURA};
-                TableModel modelaux = new TableModel(cols1,model.getList());
-                modelaux.marcarString(model.getId());
+                TableModel modelaux = new TableModel(cols1,model.getListUsuarios());
+                modelaux.marcarString(model.getUsuarioEspecifico());
                 TableUsuarios.setModel(modelaux);
                 TableUsuarios.setRowHeight(30);
                 TableColumnModel columnModel1 = TableUsuarios.getColumnModel();

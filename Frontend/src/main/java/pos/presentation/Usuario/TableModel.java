@@ -6,7 +6,7 @@ import pos.presentation.AbstractTableModel;
 
 import java.util.List;
 
-public class TableModel extends AbstractTableModel<String> implements javax.swing.table.TableModel {
+public class TableModel extends AbstractTableModel<Usuarios> implements javax.swing.table.TableModel {
 
 
     public static final int ID = 0;
@@ -14,7 +14,7 @@ public class TableModel extends AbstractTableModel<String> implements javax.swin
 
     private Boolean[] checkBoxData; // Para almacenar el estado del JCheckBox
 
-    public TableModel(int[] cols, List<String> rows) {
+    public TableModel(int[] cols, List<Usuarios> rows) {
         super(cols, rows);
         // Inicializamos el array de JCheckBox con valores falsos
         checkBoxData = new Boolean[rows.size()];
@@ -24,10 +24,10 @@ public class TableModel extends AbstractTableModel<String> implements javax.swin
     }
 
     @Override
-    protected Object getPropetyAt(String e, int col) {
+    protected Object getPropetyAt(Usuarios e, int col) {
         switch (cols[col]) {
             case ID:
-                return e; // El ID del usuario (string)
+                return e.getId(); // El ID del usuario (string)
             case FACTURA:
                 return checkBoxData[rows.indexOf(e)]; // Devuelve el valor del checkbox
             default:
@@ -63,7 +63,9 @@ public class TableModel extends AbstractTableModel<String> implements javax.swin
         }
         return String.class;
     }
-    public void marcarString(String valorEntrante) {
+
+
+    public void marcarString(Usuarios valorEntrante) {
         // Recorremos la lista de filas (rows)
         for (int i = 0; i < rows.size(); i++) {
             if (rows.get(i).equals(valorEntrante)) {

@@ -19,9 +19,8 @@ public class Controller implements ThreadListener {
         view.setController(this);
         view.setModel(model);
         try {
-            socketListener = new SocketListener(this, Service.instance().getSid(), Application.usuario.getId());
+            socketListener = new SocketListener(this, Service.instance().getSid(), Application.usuario);
             socketListener.start();
-            model.setList(Service.instance().usuariosActivos());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -38,8 +37,8 @@ public class Controller implements ThreadListener {
         }
     }
 
-    public void search(List<String> list) throws Exception {
-        model.setList(list);
+    public void search(List<Usuarios> list) throws Exception {
+        model.setListUsuarios(list);
     }
 
     public void delete() throws Exception {
@@ -49,8 +48,8 @@ public class Controller implements ThreadListener {
     }
 
 
-    public void setList(List<String> activeUsers) {
-        model.setList(activeUsers);
+    public void setList(List<Usuarios> activeUsers) {
+        model.setListUsuarios(activeUsers);
     }
 
 
@@ -62,17 +61,17 @@ public class Controller implements ThreadListener {
         }
     }
 
-    public List<String> getListUsuarios() {
-        return model.getList();
+    public List<Usuarios> getListUsuarios() {
+        return model.getListUsuarios();
     }
 
     public List<Factura> getListaFacturas(){
         return model.getListaFacturas();
     }
 
-    public void facturRecibida(Factura factura,String id){
+    public void facturRecibida(Factura factura,Usuarios usuarios){
         model.listaFacturas.add(factura);
-        model.setId(id);
+        model.setUsuarioEspecifico(usuarios);
         model.setListaFacturas(model.listaFacturas);
 
     }

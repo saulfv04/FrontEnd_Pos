@@ -11,7 +11,6 @@
     <orderEntry type="library" name="Protocol" level="project" />
     <orderEntry type="library" name="ProtocolPos (2)" level="project" />
     <orderEntry type="library" name="angus-activation-1.0.0" level="project" />
-    <orderEntry type="library" name="slf4j-api-1.7.36" level="project" />
     <orderEntry type="library" name="Pos" level="project" />
   </component>
 </module>
