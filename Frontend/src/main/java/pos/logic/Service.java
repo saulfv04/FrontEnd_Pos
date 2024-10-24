@@ -581,6 +581,11 @@ public class Service implements IService{
     }
 
     @Override
+    public void notifyNewConection() {
+
+    }
+
+    @Override
     public List<String> usuariosActivos() {
         try {
             os.writeInt(Protocol.REQUEST_ACTIVE_USERS); // Indicar la operación
@@ -608,7 +613,14 @@ public class Service implements IService{
         return null; // Devuelve null en caso de erro
     }
 
-    public void notifyNewConection() {
-//        Application.usuarioController.notifyNewConnection();
+    public void enviarFactura(Factura factura,String id) {
+        try {
+            os.writeInt(Protocol.FACTURA_SEND);
+            os.writeObject(factura);
+            os.writeObject(id);
+            os.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

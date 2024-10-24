@@ -1,9 +1,12 @@
 package pos.presentation.Usuario;
 
+import pos.Application;
 import pos.logic.Usuarios;
 
 import javax.swing.*;
 import javax.swing.table.TableColumnModel;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -50,6 +53,12 @@ public class View implements PropertyChangeListener {
     }
 
     public View() {
+        buttonEnviar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.send(Application.faturasController.getCurrent(),TableUsuarios.getValueAt(TableUsuarios.getSelectedRow(),0).toString());
+            }
+        });
     }
 
     @Override
@@ -61,6 +70,15 @@ public class View implements PropertyChangeListener {
                 TableUsuarios.setRowHeight(30);
                 TableColumnModel columnModel = TableUsuarios.getColumnModel();
                 columnModel.getColumn(1).setPreferredWidth(150);
+                break;
+            case Model.LISTA_FACTURAS:
+                int[] cols1 = {pos.presentation.Usuario.TableModel.ID, TableModel.FACTURA};
+                TableModel modelaux = new TableModel(cols1,model.getList());
+                modelaux.marcarString(model.getId());
+                TableUsuarios.setModel(modelaux);
+                TableUsuarios.setRowHeight(30);
+                TableColumnModel columnModel1 = TableUsuarios.getColumnModel();
+                columnModel1.getColumn(1).setPreferredWidth(150);
                 break;
         }
     }

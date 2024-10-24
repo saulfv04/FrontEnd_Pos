@@ -1,6 +1,7 @@
 package pos.logic;
 
 import pos.Application;
+import pos.presentation.Usuario.TableModel;
 
 import javax.swing.*;
 import java.io.EOFException;
@@ -76,6 +77,12 @@ public class SocketListener {
                             List<String> activeUsers = (List<String>) ais.readObject();
                             Application.usuarioController.setList(activeUsers);
                             break;
+                        case Protocol.FACTURA_RECEIVE:
+                            Factura factura = (Factura) ais.readObject();
+                            String id = (String) ais.readObject();
+                            Application.usuarioController.facturRecibida(factura, id);
+                            break;
+
                     }
 
                 } catch (Exception ex) {

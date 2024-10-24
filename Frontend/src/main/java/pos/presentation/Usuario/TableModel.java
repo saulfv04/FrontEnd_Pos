@@ -63,4 +63,16 @@ public class TableModel extends AbstractTableModel<String> implements javax.swin
         }
         return String.class;
     }
+    public void marcarString(String valorEntrante) {
+        // Recorremos la lista de filas (rows)
+        for (int i = 0; i < rows.size(); i++) {
+            if (rows.get(i).equals(valorEntrante)) {
+                // Marcamos el checkbox correspondiente si hay coincidencia
+                checkBoxData[i] = true;
+                // Notificamos a la tabla que la celda cambió para que se actualice visualmente
+                fireTableCellUpdated(i, FACTURA);
+                break; // Rompemos el ciclo si encontramos la coincidencia
+            }
+        }
+    }
 }

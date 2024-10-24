@@ -1,10 +1,7 @@
 package pos.presentation.Usuario;
 
 import pos.Application;
-import pos.logic.Service;
-import pos.logic.SocketListener;
-import pos.logic.ThreadListener;
-import pos.logic.Usuarios;
+import pos.logic.*;
 import pos.presentation.Usuario.Model;
 
 import java.util.ArrayList;
@@ -55,4 +52,30 @@ public class Controller implements ThreadListener {
     public void setList(List<String> activeUsers) {
         model.setList(activeUsers);
     }
+
+
+    public void send(Factura factura,String id) {
+        try {
+            Service.instance().enviarFactura(factura,id);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<String> getListUsuarios() {
+        return model.getList();
+    }
+
+    public List<Factura> getListaFacturas(){
+        return model.getListaFacturas();
+    }
+
+    public void facturRecibida(Factura factura,String id){
+        model.listaFacturas.add(factura);
+        model.setId(id);
+        model.setListaFacturas(model.listaFacturas);
+
+    }
+
+
 }
