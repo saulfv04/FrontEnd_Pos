@@ -51,4 +51,8 @@ public class Controller implements ThreadListener {
     public void clear() {
     }
 
+
+    public void setList(List<String> activeUsers) {
+        model.setList(activeUsers);
+    }
 }

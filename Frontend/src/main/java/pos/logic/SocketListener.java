@@ -72,11 +72,10 @@ public class SocketListener {
                             String message = (String) ais.readObject();
                             deliver(message);
                             break;
-//                        case Protocol.NEW_CONNECTION:
-//                            List<String> activeUsers = getActiveUsers();
-//                            notifyNewConnection(activeUsers);
-//                            break;
-                        // Maneja otros casos según sea necesario
+                        case Protocol.NEW_CONNECTION:
+                            List<String> activeUsers = (List<String>) ais.readObject();
+                            Application.usuarioController.setList(activeUsers);
+                            break;
                     }
 
                 } catch (Exception ex) {
@@ -97,10 +96,4 @@ public class SocketListener {
         });
     }
 
-
-    public List<String> getActiveUsers() throws IOException, ClassNotFoundException {
-        aos.writeInt(Protocol.NEW_CONNECTION);
-        aos.flush();
-        return (List<String>) ais.readObject();
-    }
 }

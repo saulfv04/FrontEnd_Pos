@@ -70,7 +70,7 @@ public class Application {
 
         initializeControllers(tabbedPane);
         initializeUsuarios(tabbedPane);
-//        usuarioController.deliver_message("NEW_CONNECTION");
+
 
         window.setSize(900, 550);
         window.setResizable(false);
