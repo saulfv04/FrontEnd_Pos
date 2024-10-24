@@ -165,8 +165,6 @@ public class View implements PropertyChangeListener {
                     window.setIconImage((new ImageIcon(Application.class.getResource("/pos/presentation/icons/plus.png"))).getImage());
                     window.setTitle("Facturar - Cantidad");
                     window.setVisible(true);
-
-
                     window.addWindowListener(new WindowAdapter() {
                         @Override
                         public void windowClosing(WindowEvent windowEvent) {
@@ -378,6 +376,12 @@ public class View implements PropertyChangeListener {
 
         return isValid;
     }
+    public void setFacturaNueva(Factura factura){
+        comboBoxClientes.setSelectedItem(factura.getCliente());
+        comboBoxCajero.setSelectedItem(factura.getCajero());
+        model.setListL(factura.getLinea());
+    }
+
     private void updateTotals() {
         this.searchProductoText.setText("");
         LbalCantidadArticulos.setText(String.valueOf(model.getTotalQuantity()));

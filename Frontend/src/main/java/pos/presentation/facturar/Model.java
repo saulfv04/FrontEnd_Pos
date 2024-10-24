@@ -140,6 +140,13 @@ public class Model extends AbstractModel {
             firePropertyChange(LISTALINEAS);
         }
     }
+
+    public void setFacturaCurrent(Factura factura){
+        this.current = factura;
+        firePropertyChange(CURRENT);
+    }
+
+
     public static final String LIST = "list";
     public static final String CURRENT = "current";
     public static final String FILTERPRODUCTO = "filterProducto";

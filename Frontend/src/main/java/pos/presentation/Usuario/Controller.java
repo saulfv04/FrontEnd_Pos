@@ -1,10 +1,7 @@
 package pos.presentation.Usuario;
 
 import pos.Application;
-import pos.logic.Service;
-import pos.logic.SocketListener;
-import pos.logic.ThreadListener;
-import pos.logic.Usuarios;
+import pos.logic.*;
 import pos.presentation.Usuario.Model;
 
 import java.util.ArrayList;
@@ -15,36 +12,69 @@ public class Controller implements ThreadListener {
     pos.presentation.Usuario.View view;
     SocketListener socketListener;
 
-    public Controller(View view,Model model) {
+    public Controller(View view, Model model) {
         model.init(new ArrayList<>());
-        this.view= view;
+        this.view = view;
         this.model = model;
         view.setController(this);
         view.setModel(model);
         try {
-            socketListener= new SocketListener(this,Service.instance().getSid(),Application.usuario.getId());
+            socketListener = new SocketListener(this, Service.instance().getSid(), Application.usuario.getId());
             socketListener.start();
             model.setList(Service.instance().usuariosActivos());
-        }catch (Exception e){
-        }
-    }
-    @Override
-    public void deliver_message(String message) {
-        try{
-
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    public void search(List<String> list) throws  Exception{
-        model.setList(list);
+
+    @Override
+    public void deliver_message(String message) {
+        try {
+            if ("NEW_CONNECTION".equals(message)) {
+                socketListener.deliver("NEW_CONNECTION");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
+    public void search(List<String> list) throws Exception {
+        model.setList(list);
+    }
 
     public void delete() throws Exception {
     }
 
     public void clear() {
+    }
+
+
+    public void setList(List<String> activeUsers) {
+        model.setList(activeUsers);
+    }
+
+
+    public void send(Factura factura,String id) {
+        try {
+            Service.instance().enviarFactura(factura,id);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<String> getListUsuarios() {
+        return model.getList();
+    }
+
+    public List<Factura> getListaFacturas(){
+        return model.getListaFacturas();
+    }
+
+    public void facturRecibida(Factura factura,String id){
+        model.listaFacturas.add(factura);
+        model.setId(id);
+        model.setListaFacturas(model.listaFacturas);
+
     }
 
 

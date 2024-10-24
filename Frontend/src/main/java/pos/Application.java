@@ -71,6 +71,7 @@ public class Application {
         initializeControllers(tabbedPane);
         initializeUsuarios(tabbedPane);
 
+
         window.setSize(900, 550);
         window.setResizable(false);
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -97,6 +98,7 @@ public class Application {
         if (option == JOptionPane.OK_OPTION) {
             String id = fieldId.getText();
             String clave = new String(fieldClave.getPassword());
+
 
             // Aquí llamas a tu lógica de validación de usuario
             return validateCredentials(id, clave);  // Este método debe validar contra la base de datos

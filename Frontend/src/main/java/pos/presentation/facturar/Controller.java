@@ -70,6 +70,13 @@ public class Controller {
             }
         }
     }
+    public Factura getCurrent() {
+        return model.getCurrent();
+    }
+
+    public void setCurrent(Factura current) {
+        model.setFacturaCurrent(current);
+    }
 
     public void updateLineas(int i, int cant){
         model.updateLineaCant(i,cant);

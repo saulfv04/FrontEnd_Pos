@@ -1,5 +1,6 @@
 package pos.logic;
 
+import pos.Application;
 import pos.presentation.Estadisticas.Rango;
 
 import javax.swing.*;
@@ -580,10 +581,14 @@ public class Service implements IService{
     }
 
     @Override
+    public void notifyNewConection() {
+
+    }
+
+    @Override
     public List<String> usuariosActivos() {
         try {
             os.writeInt(Protocol.REQUEST_ACTIVE_USERS); // Indicar la operación
-            os.writeObject(sid); // Enviar el sessionId
             os.flush(); // Asegurar que los datos se envíen al servidor
             // 2. Leer la respuesta del servidor
             int errorCode = is.readInt(); // Leer si hay error o no
@@ -606,5 +611,16 @@ public class Service implements IService{
             e.printStackTrace();
         }
         return null; // Devuelve null en caso de erro
+    }
+
+    public void enviarFactura(Factura factura,String id) {
+        try {
+            os.writeInt(Protocol.FACTURA_SEND);
+            os.writeObject(factura);
+            os.writeObject(id);
+            os.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
