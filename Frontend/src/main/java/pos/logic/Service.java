@@ -610,11 +610,11 @@ public class Service implements IService{
         return null; // Devuelve null en caso de erro
     }
 
-    public void enviarFactura(Factura factura,String id) {
+    public void enviarFactura(Factura factura,Usuarios usuario) {
         try {
             os.writeInt(Protocol.FACTURA_SEND);
             os.writeObject(factura);
-            os.writeObject(id);
+            os.writeObject(usuario);
             os.flush();
         } catch (IOException e) {
             e.printStackTrace();

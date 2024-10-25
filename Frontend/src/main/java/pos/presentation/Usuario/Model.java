@@ -72,6 +72,7 @@ public class Model extends AbstractModel{
 
     public void setUsuarioEspecifico(Usuarios usuario) {
         this.especifico = usuario;
+        firePropertyChange(LISTA_FACTURAS);
     }
 
     public void setListaFacturas(List<Factura> listaFacturas) {
@@ -93,5 +94,16 @@ public class Model extends AbstractModel{
 
     public List<Usuarios> getListUsuarios() {
         return listUsuarios;
+    }
+
+    public void addFactura(Factura factura, Usuarios usuarios) {
+        for (Usuarios user : listUsuarios) {
+            if (user.getId().equals(usuarios.getId())) {
+                user.getListaFacturas().add(factura);
+                especifico = user;
+                firePropertyChange(LISTA_FACTURAS);
+                break;
+            }
+        }
     }
 }
