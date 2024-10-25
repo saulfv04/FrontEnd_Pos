@@ -11,16 +11,16 @@ import java.util.List;
 
 public class Model extends AbstractModel{
 
-        List<String> list;
+        List<Usuarios> listUsuarios;
         Usuarios current;
         List<Factura> listaFacturas;
         int mode;
-        String id;
+        Usuarios especifico;
 
         @Override
         public void addPropertyChangeListener(PropertyChangeListener listener) {
             super.addPropertyChangeListener(listener);
-            firePropertyChange(LIST);
+            firePropertyChange(LISTUSUARIOS);
             firePropertyChange(CURRENT);
             firePropertyChange(LISTA_FACTURAS);
         }
@@ -29,20 +29,20 @@ public class Model extends AbstractModel{
 
         }
 
-        public void init(List<String> list){
-            this.list = list;
+        public void init(List<Usuarios> list){
+            this.listUsuarios = list;
             this.mode= Application.MODE_CREATE;
             this.listaFacturas = new ArrayList<>();
             this.current = new Usuarios();
         }
 
-        public List<String> getList() {
-            return list;
+        public List<Factura> getListFacturac() {
+            return listaFacturas;
         }
 
-        public void setList(List<String> list){
-            this.list = list;
-            firePropertyChange(LIST);
+        public void setListUsuarios(List<Usuarios> list){
+            this.listUsuarios = list;
+            firePropertyChange(LISTUSUARIOS);
         }
 
     public Usuarios getCurrent() {
@@ -66,12 +66,13 @@ public class Model extends AbstractModel{
         return listaFacturas;
     }
 
-    public String getId() {
-        return id;
+    public Usuarios getUsuarioEspecifico() {
+        return especifico;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setUsuarioEspecifico(Usuarios usuario) {
+        this.especifico = usuario;
+        firePropertyChange(LISTA_FACTURAS);
     }
 
     public void setListaFacturas(List<Factura> listaFacturas) {
@@ -79,13 +80,30 @@ public class Model extends AbstractModel{
             firePropertyChange(LISTA_FACTURAS);
     }
 
-    public void addUsuario(String usuarios){
-            this.list.add(usuarios);
+
+
+
+    public void addUsuario(Usuarios usuarios){
+            this.listUsuarios.add(usuarios);
         }
 
-    public static final String LIST="list";
+    public static final String LISTUSUARIOS="listuUsuarios";
     public static final String CURRENT="Current";
     public static final String LISTA_FACTURAS="listaFacturas";
 
 
+    public List<Usuarios> getListUsuarios() {
+        return listUsuarios;
+    }
+
+    public void addFactura(Factura factura, Usuarios usuarios) {
+        for (Usuarios user : listUsuarios) {
+            if (user.getId().equals(usuarios.getId())) {
+                user.getListaFacturas().add(factura);
+                especifico = user;
+                firePropertyChange(LISTA_FACTURAS);
+                break;
+            }
+        }
+    }
 }

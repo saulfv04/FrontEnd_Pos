@@ -21,7 +21,7 @@ public class SocketListener {
     ObjectOutputStream aos;
     ObjectInputStream ais;
 
-    public SocketListener(ThreadListener listener, String sid, String usuario) throws Exception {
+    public SocketListener(ThreadListener listener, String sid, Usuarios usuario) throws Exception {
         this.listener = listener;
 
         // Inicializar el socket primero
@@ -35,7 +35,7 @@ public class SocketListener {
         this.sid = sid;
         aos.writeInt(Protocol.ASYNC);
         aos.writeObject(sid);
-        aos.writeObject((String) Application.usuario.getId());
+        aos.writeObject(usuario);
         aos.flush();
     }
 
@@ -70,17 +70,36 @@ public class SocketListener {
                     method = ais.readInt(); // Este es un punto donde el hilo podría bloquearse esperando datos
                     switch (method) {
                         case Protocol.DELIVER_MESSAGE:
-                            String message = (String) ais.readObject();
-                            deliver(message);
+                            try {
+                                String message = (String) ais.readObject();
+                                SwingUtilities.invokeLater(new Runnable() {
+                                    public void run() {
+                                        deliver(message);
+                                    }
+                                });
+                            }catch (ClassNotFoundException ex){}
                             break;
                         case Protocol.NEW_CONNECTION:
-                            List<String> activeUsers = (List<String>) ais.readObject();
-                            Application.usuarioController.setList(activeUsers);
+                            try {
+                                List<Usuarios> activeUsers = (List<Usuarios>) ais.readObject();
+                                SwingUtilities.invokeLater(new Runnable() {
+                                    public void run() {
+                                        Application.usuarioController.setList(activeUsers);
+                                    }
+                                });
+                            }catch (ClassNotFoundException ex){}
                             break;
                         case Protocol.FACTURA_RECEIVE:
-                            Factura factura = (Factura) ais.readObject();
-                            String id = (String) ais.readObject();
-                            Application.usuarioController.facturRecibida(factura, id);
+
+                            try {
+                                Factura factura = (Factura) ais.readObject();
+                                Usuarios usuario = (Usuarios) ais.readObject();
+                                SwingUtilities.invokeLater(new Runnable() {
+                                    public void run() {
+                                        Application.usuarioController.facturRecibida(factura, usuario);
+                                    }
+                                });
+                            }catch (ClassNotFoundException ex){}
                             break;
 
                     }

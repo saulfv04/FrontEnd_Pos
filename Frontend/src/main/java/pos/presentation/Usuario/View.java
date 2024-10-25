@@ -1,6 +1,7 @@
 package pos.presentation.Usuario;
 
 import pos.Application;
+import pos.logic.Factura;
 import pos.logic.Usuarios;
 
 import javax.swing.*;
@@ -31,7 +32,7 @@ public class View implements PropertyChangeListener {
     public void setUsuarios(Usuarios usuario){
         this.model.setCurrent(usuario);
     }
-    public void addListaUsuarios(String usuario){
+    public void addListaUsuarios(Usuarios usuario){
         this.model.addUsuario(usuario);
     }
 
@@ -56,7 +57,37 @@ public class View implements PropertyChangeListener {
         buttonEnviar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                controller.send(Application.faturasController.getCurrent(),TableUsuarios.getValueAt(TableUsuarios.getSelectedRow(),0).toString());
+                int selectedRow = TableUsuarios.getSelectedRow();
+                if (selectedRow != -1) {
+                    Usuarios usuario = model.getListUsuarios().get(selectedRow);
+                    controller.send(Application.faturasController.getCurrent(), usuario);
+                    Application.faturasController.setCurrent(new Factura());
+                    Application.faturasController.facturaEnviadaReinicio();
+                    TableUsuarios.clearSelection();
+                } else {
+                    JOptionPane.showMessageDialog(panel1, "Por favor, seleccione un usuario de la tabla.");
+                }
+            }
+        });
+
+        recibirButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedRow = TableUsuarios.getSelectedRow();
+                if (selectedRow != -1) {
+                    Usuarios usuario = model.getListUsuarios().get(selectedRow);
+                    if (!usuario.getListaFacturas().isEmpty()) {
+                        Factura factura = usuario.getListaFacturas().getFirst();
+                        Application.faturasController.addFactura(factura);
+                        usuario.getListaFacturas().removeFirst();
+                        model.setUsuarioEspecifico(usuario);
+                        TableUsuarios.clearSelection();
+                    } else {
+                        JOptionPane.showMessageDialog(panel1, "Esta persona no ha enviado más facturas.");
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(panel1, "Por favor, seleccione un usuario de la tabla.");
+                }
             }
         });
     }
@@ -64,17 +95,17 @@ public class View implements PropertyChangeListener {
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         switch (evt.getPropertyName()) {
-            case pos.presentation.Usuario.Model.LIST:
+            case Model.LISTUSUARIOS:
                 int[] cols = {pos.presentation.Usuario.TableModel.ID, TableModel.FACTURA};
-                TableUsuarios.setModel(new TableModel(cols,model.getList()));
+                TableUsuarios.setModel(new TableModel(cols,model.getListUsuarios()));
                 TableUsuarios.setRowHeight(30);
                 TableColumnModel columnModel = TableUsuarios.getColumnModel();
                 columnModel.getColumn(1).setPreferredWidth(150);
                 break;
             case Model.LISTA_FACTURAS:
                 int[] cols1 = {pos.presentation.Usuario.TableModel.ID, TableModel.FACTURA};
-                TableModel modelaux = new TableModel(cols1,model.getList());
-                modelaux.marcarString(model.getId());
+                TableModel modelaux = new TableModel(cols1,model.getListUsuarios());
+                modelaux.marcarString(model.getListUsuarios());
                 TableUsuarios.setModel(modelaux);
                 TableUsuarios.setRowHeight(30);
                 TableColumnModel columnModel1 = TableUsuarios.getColumnModel();

@@ -48,6 +48,20 @@ public class Controller {
         model.setListL(model.getCurrent().getLinea());
     }
 
+    public void facturaEnviadaReinicio(){
+
+        model.getCurrent().setCliente(null);
+        model.getCurrent().setCajero(null);
+        model.getCurrent().setLinea(new ArrayList<>());
+        removeAllLineas();
+        updateTotals();
+        view.reiniciarComboxes();
+    }
+
+    public void updateTotals(){
+        view.updateTotals();
+    }
+
 
     public Producto getCurrentProducto() {
         return model.getCurrentP();
@@ -127,5 +141,17 @@ public class Controller {
     public boolean existeProductoEnLinea(String codigoProducto) {
         return model.getCurrent().getLinea().stream()
                 .anyMatch(linea -> linea.getProducto().getCodigo().equals(codigoProducto));
+    }
+
+
+    public void addFactura(Factura factura) {
+        model.getCurrent().setLinea(new ArrayList<>());
+        model.getCurrent().setLinea(factura.getLinea());
+        model.getCurrent().setCajero(factura.getCajero());
+        model.getCurrent().setCliente(factura.getCliente());
+        model.setListL(model.getCurrent().getLinea());
+        view.setClienteEspecifico(model.getCurrent().getCliente());
+        view.setCajeroEspecifico(model.getCurrent().getCajero());
+
     }
 }
