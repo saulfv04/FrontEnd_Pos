@@ -621,6 +621,26 @@ public class Service implements IService{
         }
     }
 
+    public List<Usuarios> verificarUsuariosActivos(){
+        try{
+            os.writeInt(Protocol.USUARIO_VERIFICATION);
+            os.flush();
+            int errorCode= is.readInt();
+            if(errorCode==Protocol.ERROR_NO_ERROR){
+                List<Usuarios> usuariosActivos= (List<Usuarios>) is.readObject();
+                return usuariosActivos;
+            }else {
+                throw new Exception("ERROR: El servidor retornó un error al procesar las usuarios activos.");
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
     public List<Factura> enviarFacturas() throws Exception {
         return List.of();

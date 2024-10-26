@@ -101,7 +101,9 @@ public class SocketListener {
                                 });
                             }catch (ClassNotFoundException ex){}
                             break;
-
+//                        case Protocol.USUARIO_VERIFICATION:
+//
+//                            break;
                     }
 
                 } catch (Exception ex) {
