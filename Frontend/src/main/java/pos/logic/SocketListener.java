@@ -62,55 +62,69 @@ public class SocketListener {
     }
 
     public void listen() {
-        int method;
-        try {
-            while (condition) {
-                try {
-                    method = ais.readInt(); // Este es un punto donde el hilo podría bloquearse esperando datos
-                    switch (method) {
-                        case Protocol.DELIVER_MESSAGE:
-                            try {
-                                String message = (String) ais.readObject();
-                                SwingUtilities.invokeLater(new Runnable() {
-                                    public void run() {
-                                        deliver(message);
-                                    }
-                                });
-                            }catch (ClassNotFoundException ex){}
-                            break;
-                        case Protocol.NEW_CONNECTION:
-                            try {
-                                List<Usuarios> activeUsers = (List<Usuarios>) ais.readObject();
-                                SwingUtilities.invokeLater(new Runnable() {
-                                    public void run() {
-                                        Application.usuarioController.setList(activeUsers);
-                                    }
-                                });
-                            }catch (ClassNotFoundException ex){}
-                            break;
-                        case Protocol.FACTURA_RECEIVE:
-
-                            try {
-                                Factura factura = (Factura) ais.readObject();
-                                Usuarios usuario = (Usuarios) ais.readObject();
-                                SwingUtilities.invokeLater(new Runnable() {
-                                    public void run() {
-                                        Application.usuarioController.facturRecibida(factura, usuario);
-                                    }
-                                });
-                            }catch (ClassNotFoundException ex){}
-                            break;
-                    }
-
-                } catch (Exception ex) {
-                    System.err.println("Error en el hilo de escucha: " + ex.getMessage());
+    int method;
+    try {
+        while (condition) {
+            try {
+                if (as.isClosed()) {
+                    break;
+                }
+                method = ais.readInt(); // This is a point where the thread could block waiting for data
+                switch (method) {
+                    case Protocol.DELIVER_MESSAGE:
+                        try {
+                            String message = (String) ais.readObject();
+                            SwingUtilities.invokeLater(new Runnable() {
+                                public void run() {
+                                    deliver(message);
+                                }
+                            });
+                        } catch (ClassNotFoundException ex) {
+                            ex.printStackTrace();
+                        }
+                        break;
+                    case Protocol.NEW_CONNECTION:
+                        try {
+                            List<Usuarios> activeUsers = (List<Usuarios>) ais.readObject();
+                            SwingUtilities.invokeLater(new Runnable() {
+                                public void run() {
+                                    Application.usuarioController.setList(activeUsers);
+                                }
+                            });
+                        } catch (ClassNotFoundException ex) {
+                            ex.printStackTrace();
+                        }
+                        break;
+                    case Protocol.FACTURA_RECEIVE:
+                        try {
+                            Factura factura = (Factura) ais.readObject();
+                            Usuarios usuario = (Usuarios) ais.readObject();
+                            SwingUtilities.invokeLater(new Runnable() {
+                                public void run() {
+                                    Application.usuarioController.facturRecibida(factura, usuario);
+                                }
+                            });
+                        } catch (ClassNotFoundException ex) {
+                            ex.printStackTrace();
+                        }
+                        break;
+                }
+            } catch (SocketException ex) {
+                if ("Socket closed".equals(ex.getMessage())) {
+                    break;
+                } else {
+                    System.err.println("SocketException in listener: " + ex.getMessage());
                     ex.printStackTrace();
                 }
+            } catch (Exception ex) {
+                System.err.println("Error in listener thread: " + ex.getMessage());
+                ex.printStackTrace();
             }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
+    } catch (Exception e) {
+        throw new RuntimeException(e);
     }
+}
 
     public void deliver(final String message) {
         SwingUtilities.invokeLater(new Runnable() {

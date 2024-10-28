@@ -63,9 +63,10 @@ public class Application {
         window.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
+                super.windowClosing(e);
                 Service.instance().exit();
                 usuarioController.stop();
-                super.windowClosing(e);
+
             }
         });
 
