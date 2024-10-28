@@ -381,8 +381,12 @@ public class View implements PropertyChangeListener {
         comboBoxCajero.setSelectedItem(factura.getCajero());
         model.setListL(factura.getLinea());
     }
-
-    private void updateTotals() {
+    public void reiniciarComboxes(){
+        comboBoxClientes.setSelectedIndex(-1);
+        comboBoxCajero.setSelectedIndex(-1);
+        updateTotals();
+    }
+    public void updateTotals() {
         this.searchProductoText.setText("");
         LbalCantidadArticulos.setText(String.valueOf(model.getTotalQuantity()));
         jLabelSubTotalPrecio.setText(String.format(Locale.US,"%.2f", model.getSubtotal()));
@@ -410,5 +414,15 @@ public class View implements PropertyChangeListener {
         }
 
         this.panel.revalidate();
+    }
+
+    public void setClienteEspecifico(Cliente cliente) {
+        updateComboBoxClientes();
+        comboBoxClientes.setSelectedItem(cliente);
+    }
+
+    public void setCajeroEspecifico(Cajero cajero) {
+        updateComboBoxCajeros();
+        comboBoxCajero.setSelectedItem(cajero);
     }
 }

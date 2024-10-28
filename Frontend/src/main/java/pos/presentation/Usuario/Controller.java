@@ -53,9 +53,9 @@ public class Controller implements ThreadListener {
     }
 
 
-    public void send(Factura factura,String id) {
+    public void send(Factura factura,Usuarios usuario) {
         try {
-            Service.instance().enviarFactura(factura,id);
+            Service.instance().enviarFactura(factura,usuario);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -70,10 +70,7 @@ public class Controller implements ThreadListener {
     }
 
     public void facturRecibida(Factura factura,Usuarios usuarios){
-        model.listaFacturas.add(factura);
-        model.setUsuarioEspecifico(usuarios);
-        model.setListaFacturas(model.listaFacturas);
-
+        model.addFactura(factura, usuarios);
     }
 
 

@@ -25,7 +25,7 @@ public class Application {
     public static pos.presentation.facturar.Controller faturasController;
     public static pos.presentation.Usuario.Controller usuarioController;  // Vista de usuario
     public static Usuarios usuario;  // Vista de usuario
-
+    public static List<Usuarios> listaUsuariosActivos;
     public static Usuarios getUsuario() {
         return usuario;
     }
@@ -113,20 +113,37 @@ public class Application {
         try {
             // Obtener la lista total de usuarios
             List<Usuarios> usuariosTotales = Service.instance().search(new Usuarios());
+            listaUsuariosActivos = Service.instance().verificarUsuariosActivos();
 
-            // Recorrer la lista para verificar las credenciales
-            for (Usuarios usuario : usuariosTotales) {
-                // Comparar el id y la clave
-                if (usuario.getId().equals(id) && usuario.getClave().equals(clave)) {
-                    setUsuario(usuario);
-                    return true;  // Las credenciales son correctas
+            // Verificar que `usuariosTotales` no esté vacía
+            if (usuariosTotales.isEmpty()) {
+                return false;  // No hay usuarios en la base de datos
+            } else {
+                for (Usuarios usuario : usuariosTotales) {
+                    // Comparar el id y la clave
+                    if (usuario.getId().equals(id) && usuario.getClave().equals(clave)) {
+                        // Verificar si usuariosActivos es null o está vacío
+                        if (listaUsuariosActivos == null || listaUsuariosActivos.isEmpty()) {
+                            setUsuario(usuario);
+                            return true;  // Credenciales correctas y no hay usuarios activos
+                        } else {
+                            // Recorrer lista de usuarios activos
+                            for (Usuarios usuarioActivo :listaUsuariosActivos) {
+                                if (usuarioActivo.getId().equals(id)) {
+                                    return false;
+                                }
+                            }
+                            // Si no se encontró el usuario en usuariosActivos, se permite el acceso
+                            setUsuario(usuario);
+                            return true;
+                        }
+                    }
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();  // Para depuración
         }
-
-        return false;  // El usuario no existe o la clave no coincide
+        return false;  // El usuario no existe, la clave no coincide o el usuario ya está activo
     }
 
     private static void initializeControllers(JTabbedPane tabbedPane) {

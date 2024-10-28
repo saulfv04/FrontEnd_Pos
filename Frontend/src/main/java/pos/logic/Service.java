@@ -610,14 +610,34 @@ public class Service implements IService{
         return null; // Devuelve null en caso de erro
     }
 
-    public void enviarFactura(Factura factura,String id) {
+    public void enviarFactura(Factura factura,Usuarios usuario) {
         try {
             os.writeInt(Protocol.FACTURA_SEND);
             os.writeObject(factura);
-            os.writeObject(id);
+            os.writeObject(usuario);
             os.flush();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public List<Usuarios> verificarUsuariosActivos(){
+        try{
+            os.writeInt(Protocol.USUARIO_VERIFICATION);
+            os.flush();
+            int errorCode= is.readInt();
+            if(errorCode==Protocol.ERROR_NO_ERROR){
+                List<Usuarios> usuariosActivos= (List<Usuarios>) is.readObject();
+                return usuariosActivos;
+            }else {
+                throw new Exception("ERROR: El servidor retornó un error al procesar las usuarios activos.");
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 

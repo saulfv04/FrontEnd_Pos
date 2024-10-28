@@ -100,7 +100,6 @@ public class SocketListener {
                                 });
                             }catch (ClassNotFoundException ex){}
                             break;
-
                     }
 
                 } catch (Exception ex) {
