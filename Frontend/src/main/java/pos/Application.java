@@ -64,6 +64,7 @@ public class Application {
             @Override
             public void windowClosing(WindowEvent e) {
                 Service.instance().exit();
+                usuarioController.stop();
                 super.windowClosing(e);
             }
         });

@@ -55,7 +55,6 @@ public class SocketListener {
     public void stop() {
         condition = false;
         try {
-            // Cerrar el socket para liberar el hilo en caso de que esté bloqueado
             as.close();
         } catch (IOException e) {
             e.printStackTrace();
