@@ -49,10 +49,7 @@ public class Controller {
     }
 
     public void facturaEnviadaReinicio(){
-
-        model.getCurrent().setCliente(null);
-        model.getCurrent().setCajero(null);
-        model.getCurrent().setLinea(new ArrayList<>());
+        model.setFacturaCurrent(new Factura());
         removeAllLineas();
         updateTotals();
         view.reiniciarComboxes();
@@ -145,13 +142,9 @@ public class Controller {
 
 
     public void addFactura(Factura factura) {
-        model.getCurrent().setLinea(new ArrayList<>());
-        model.getCurrent().setLinea(factura.getLinea());
-        model.getCurrent().setCajero(factura.getCajero());
-        model.getCurrent().setCliente(factura.getCliente());
-        model.setListL(model.getCurrent().getLinea());
+        model.setFacturaCurrent(factura);
+        model.setListL(factura.getLinea());
         view.setClienteEspecifico(model.getCurrent().getCliente());
         view.setCajeroEspecifico(model.getCurrent().getCajero());
-
     }
 }

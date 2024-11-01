@@ -74,4 +74,7 @@ public class Controller implements ThreadListener {
     }
 
 
+    public void stop() {
+        socketListener.stop();
+    }
 }

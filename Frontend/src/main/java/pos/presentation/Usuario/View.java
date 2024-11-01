@@ -57,15 +57,23 @@ public class View implements PropertyChangeListener {
         buttonEnviar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int selectedRow = TableUsuarios.getSelectedRow();
-                if (selectedRow != -1) {
-                    Usuarios usuario = model.getListUsuarios().get(selectedRow);
-                    controller.send(Application.faturasController.getCurrent(), usuario);
-                    Application.faturasController.setCurrent(new Factura());
-                    Application.faturasController.facturaEnviadaReinicio();
-                    TableUsuarios.clearSelection();
+                Factura currentFactura = Application.faturasController.getCurrent();
+                if (currentFactura != null && currentFactura.getLinea() != null && !currentFactura.getLinea().isEmpty() &&
+                        currentFactura.getCliente() != null && currentFactura.getCajero() != null) {
+
+                    int selectedRow = TableUsuarios.getSelectedRow();
+                    if (selectedRow != -1) {
+                        Usuarios usuario = model.getListUsuarios().get(selectedRow);
+                        controller.send(currentFactura, usuario);
+                        Application.faturasController.setCurrent(new Factura());
+                        Application.faturasController.facturaEnviadaReinicio();
+                        TableUsuarios.clearSelection();
+                    } else {
+                        JOptionPane.showMessageDialog(panel1, "Por favor, seleccione un usuario de la tabla.");
+                    }
                 } else {
-                    JOptionPane.showMessageDialog(panel1, "Por favor, seleccione un usuario de la tabla.");
+                    JOptionPane.showMessageDialog(panel1, "La factura actual no es válida. Verifique que tenga líneas, cliente y cajero.");
+                    TableUsuarios.clearSelection();
                 }
             }
         });
