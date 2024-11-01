@@ -72,8 +72,6 @@ public class Application {
 
         initializeControllers(tabbedPane);
         initializeUsuarios(tabbedPane);
-
-
         window.setSize(900, 550);
         window.setResizable(false);
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);

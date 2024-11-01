@@ -4,9 +4,7 @@ import pos.logic.Categoria;
 import pos.logic.Service;
 import pos.logic.Rango;
 import javax.swing.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class Controller {
     private View view;
@@ -73,12 +71,11 @@ public class Controller {
 
     public void addAllCategorias() throws Exception {
         List<Categoria> allCategorias = getCategoria(); // Obtener todas las categorías
-        for (Categoria c : allCategorias) {
-            // Si la categoría no está ya en la lista seleccionada, agregarla
-            if (!model.getCategoriasSeleccionadas().contains(c)) {
-                model.getCategoriasSeleccionadas().add(c);
-            }
-        }
+        Set<Categoria> uniqueCategorias = new HashSet<>(allCategorias); // Eliminar duplicados
+
+        // Reemplazar la lista actual con las categorías únicas
+        model.setCategoriasSeleccionadas(new ArrayList<>(uniqueCategorias));
+
         // Actualizar la data después de agregar todas las categorías
         actualizarData();
     }
